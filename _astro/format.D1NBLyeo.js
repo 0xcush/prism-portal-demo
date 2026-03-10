@@ -1,0 +1,1 @@
+function t(r){return new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP",minimumFractionDigits:0,maximumFractionDigits:0}).format(r)}function n(r){return new Date(r).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}export{t as a,n as f};

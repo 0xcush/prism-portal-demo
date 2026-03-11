@@ -92,7 +92,11 @@ const SparkleIcon = () => (
   </svg>
 );
 
-export default function AdminActivityFeed() {
+interface AdminActivityFeedProps {
+  basePath?: string;
+}
+
+export default function AdminActivityFeed({ basePath = '/' }: AdminActivityFeedProps) {
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
       <div className="p-6 border-b border-slate-100">
@@ -122,6 +126,15 @@ export default function AdminActivityFeed() {
             </div>
           );
         })}
+      </div>
+
+      <div className="px-6 py-3 border-t border-slate-100">
+        <a
+          href={`${basePath}admin/activities`}
+          className="text-sm font-medium text-navy-600 hover:text-navy-700 transition-colors"
+        >
+          View all activities &rarr;
+        </a>
       </div>
     </div>
   );

@@ -5,6 +5,8 @@ import { loadAdminData } from '../../lib/data-loader';
 import { getQuarterlyKPIs } from '../../data/admin';
 import KPITrendChart from '../../components/admin/KPITrendChart';
 import ConversionFunnelChart from '../../components/admin/ConversionFunnelChart';
+import LocationKPISection from '../../components/admin/LocationKPISection';
+import ConversionRateSection from '../../components/admin/ConversionRateSection';
 const BASE = import.meta.env.BASE_URL;
 
 const { prospects, firms, bdActivities: activities } = await loadAdminData();
@@ -88,6 +90,11 @@ function formatCurrency(amount: number): string {
       <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Conversion Rate</p>
       <p class="text-xl font-bold text-navy-600 mt-1">{conversionRate}%</p>
     </div>
+  </div>
+
+  <!-- Activity by Location -->
+  <div class="mb-8 animate-fade-up">
+    <LocationKPISection client:load kpis={JSON.parse(JSON.stringify(kpis))} />
   </div>
 
   <!-- Quarterly Breakdown -->
@@ -263,5 +270,10 @@ function formatCurrency(amount: number): string {
         </tbody>
       </table>
     </div>
+  </div>
+
+  <!-- Conversion Rates -->
+  <div class="mb-8 animate-fade-up">
+    <ConversionRateSection client:load kpis={JSON.parse(JSON.stringify(kpis))} />
   </div>
 </AdminLayout>

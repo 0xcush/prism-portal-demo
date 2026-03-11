@@ -2,12 +2,24 @@
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { loadAdminData } from '../../lib/data-loader';
+import { computeReminderStatus } from '../../data/admin';
 import ContactsTable from '../../components/admin/ContactsTable';
 const BASE = import.meta.env.BASE_URL;
 
 const { contacts } = await loadAdminData();
-const overdueContacts = contacts.filter(c => c.followUpStatus === 'Overdue');
-const dueContacts = contacts.filter(c => c.followUpStatus === 'Due');
+
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+const sevenDaysFromNow = new Date(today);
+sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+const overdueCount = contacts.filter(c => c.nextReminderDate && computeReminderStatus(c.nextReminderDate) === 'Overdue').length;
+const dueThisWeek = contacts.filter(c => c.nextReminderDate && computeReminderStatus(c.nextReminderDate) === 'Due').length;
+const contactedThisMonth = contacts.filter(c => {
+  const d = new Date(c.lastContactDate);
+  return d >= monthStart && d <= today;
+}).length;
 ---
 
 <AdminLayout title="Contacts - Prism Admin" activePage="contacts">
@@ -23,17 +35,17 @@ const dueContacts = contacts.filter(c => c.followUpStatus === 'Due');
       <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Contacts</p>
       <p class="text-xl font-bold text-slate-900 mt-1">{contacts.length}</p>
     </div>
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-1">
+    <div class={`rounded-xl border shadow-sm p-4 animate-fade-up-1 ${overdueCount > 0 ? 'bg-red-50 border-red-200' : 'bg-white border-slate-200'}`}>
       <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Overdue</p>
-      <p class="text-xl font-bold text-red-600 mt-1">{overdueContacts.length}</p>
+      <p class="text-xl font-bold text-red-600 mt-1">{overdueCount}</p>
     </div>
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-2">
-      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Due Soon</p>
-      <p class="text-xl font-bold text-amber-600 mt-1">{dueContacts.length}</p>
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Due This Week</p>
+      <p class="text-xl font-bold text-amber-600 mt-1">{dueThisWeek}</p>
     </div>
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-3">
-      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">On Track</p>
-      <p class="text-xl font-bold text-emerald-600 mt-1">{contacts.filter(c => c.followUpStatus === 'On Track').length}</p>
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Contacted This Month</p>
+      <p class="text-xl font-bold text-emerald-600 mt-1">{contactedThisMonth}</p>
     </div>
   </div>
 

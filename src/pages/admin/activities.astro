@@ -12,49 +12,69 @@ const completed = activities.filter(a => a.status === 'Completed');
 const planned = activities.filter(a => a.status === 'Planned');
 const totalCost = completed.reduce((s, a) => s + a.cost, 0);
 const totalProspects = completed.reduce((s, a) => s + a.prospectsGenerated, 0);
-const costPerProspect = totalProspects > 0 ? Math.round(totalCost / totalProspects) : 0;
 
-// Best type
-const typePerformance: Record<string, { cost: number; prospects: number }> = {};
-for (const a of completed) {
-  if (!typePerformance[a.type]) typePerformance[a.type] = { cost: 0, prospects: 0 };
-  typePerformance[a.type].cost += a.cost;
-  typePerformance[a.type].prospects += a.prospectsGenerated;
-}
-const bestType = Object.entries(typePerformance)
-  .filter(([_, v]) => v.prospects > 0)
-  .sort((a, b) => (a[1].cost / a[1].prospects) - (b[1].cost / b[1].prospects))[0];
+// This quarter (Q1 2026: Jan-Mar)
+const thisQuarter = activities.filter(a => {
+  const d = new Date(a.date);
+  return d.getFullYear() === 2026 && d.getMonth() < 3;
+});
 ---
 
 <AdminLayout title="Activities - Prism Admin" activePage="activities">
   <Breadcrumbs items={[{label:"Admin", href:`${BASE}admin`}, {label:"Activities"}]} />
   <div class="mb-6 animate-fade-up">
     <h2 class="text-2xl font-bold text-slate-900">BD Activities</h2>
-    <p class="text-sm text-slate-500 mt-1">Business development events and campaigns</p>
+    <p class="text-sm text-slate-500 mt-1">Track events, meetings, and outreach campaigns. Each activity links to prospects generated and follow-up tasks.</p>
   </div>
 
   <!-- Summary -->
-  <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-6">
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up">
-      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Completed</p>
-      <p class="text-xl font-bold text-slate-900 mt-1">{completed.length}</p>
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">This Quarter</p>
+      <p class="text-xl font-bold text-slate-900 mt-1">{thisQuarter.length}</p>
     </div>
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-1">
-      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Planned</p>
-      <p class="text-xl font-bold text-blue-600 mt-1">{planned.length}</p>
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Prospects Generated</p>
+      <p class="text-xl font-bold text-emerald-600 mt-1">{totalProspects}</p>
     </div>
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-2">
-      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Spend</p>
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Cost</p>
       <p class="text-xl font-bold text-slate-900 mt-1">{formatCurrencyFull(totalCost)}</p>
     </div>
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-3">
-      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Cost / Prospect</p>
-      <p class="text-xl font-bold text-slate-900 mt-1">{formatCurrencyFull(costPerProspect)}</p>
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Upcoming</p>
+      <p class="text-xl font-bold text-blue-600 mt-1">{planned.length}</p>
     </div>
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-4">
-      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Best Channel</p>
-      <p class="text-lg font-bold text-navy-600 mt-1">{bestType ? bestType[0] : '-'}</p>
-    </div>
+  </div>
+
+  <!-- How this works -->
+  <div class="mb-6 animate-fade-up-3">
+    <details class="bg-white rounded-xl border border-slate-200 shadow-sm">
+      <summary class="px-5 py-3 cursor-pointer text-sm font-medium text-slate-700 hover:text-slate-900 select-none flex items-center gap-2">
+        <svg class="w-4 h-4 text-slate-400 transition-transform details-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+        How this works
+      </summary>
+      <div class="px-5 pb-4 text-sm text-slate-600 space-y-3 border-t border-slate-100 pt-3">
+        <div>
+          <p class="font-medium text-slate-700 mb-1">BD Activities</p>
+          <p>Each row is a business development event: lunches, office visits, conferences, webinars, email campaigns, and networking events. Activities are logged before they happen (Planned) and updated after (Completed).</p>
+        </div>
+        <div>
+          <p class="font-medium text-slate-700 mb-1">Prospects Generated</p>
+          <p>The number of new prospects that entered the pipeline as a direct result of this activity. This links BD spend to pipeline value.</p>
+        </div>
+        <div>
+          <p class="font-medium text-slate-700 mb-1">Follow-Up Assignments</p>
+          <p>Every activity has a follow-up owner (Kirsty or Dibo) and a due date. Use the "Assigned To" and "Follow-Up" filters to see your pending tasks.</p>
+        </div>
+        <div>
+          <p class="font-medium text-slate-700 mb-1">ROI by Channel</p>
+          <p>The chart below groups completed activities by type and compares total spend vs. prospects generated, showing which channels deliver the best return.</p>
+        </div>
+      </div>
+    </details>
   </div>
 
   <!-- ROI Chart -->

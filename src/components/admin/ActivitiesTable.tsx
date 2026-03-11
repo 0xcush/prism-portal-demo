@@ -1,9 +1,21 @@
+import { useState } from 'react';
 import DataTable from '../DataTable';
 import type { ColumnDef, FilterDef } from '../DataTable';
 import StatusBadge from '../StatusBadge';
 import ErrorBoundary from '../ErrorBoundary';
 import { formatCurrencyFull, formatDate } from '../../data/admin';
 import type { BDActivity } from '../../data/admin';
+import ActivityDetail from './ActivityDetail';
+
+const CURRENT_DATE = new Date('2026-03-11');
+
+function getFollowUpDateColor(dateStr: string): string {
+  const date = new Date(dateStr);
+  const diffDays = (date.getTime() - CURRENT_DATE.getTime()) / (1000 * 60 * 60 * 24);
+  if (diffDays < 0) return 'text-red-600';
+  if (diffDays <= 7) return 'text-amber-600';
+  return 'text-emerald-600';
+}
 
 interface ActivitiesTableProps {
   activities: BDActivity[];
@@ -60,6 +72,24 @@ const columns: ColumnDef<BDActivity>[] = [
     sortValue: (row) => row.prospectsGenerated,
   },
   {
+    key: 'assignedTo',
+    header: 'Assigned',
+    render: (row) => <span className="text-xs text-slate-600">{row.assignedTo}</span>,
+  },
+  {
+    key: 'followUpDate',
+    header: 'Follow-Up',
+    render: (row) => (
+      <div className="flex items-center gap-2">
+        <span className={`text-xs font-medium ${getFollowUpDateColor(row.followUpDate)}`}>
+          {formatDate(row.followUpDate)}
+        </span>
+        <StatusBadge status={row.followUpStatus} />
+      </div>
+    ),
+    sortValue: (row) => new Date(row.followUpDate).getTime(),
+  },
+  {
     key: 'cost',
     header: 'Cost',
     align: 'right',
@@ -90,9 +120,29 @@ const filters: FilterDef[] = [
       { value: 'Cancelled', label: 'Cancelled' },
     ],
   },
+  {
+    key: 'assignedTo',
+    label: 'Assigned To',
+    options: [
+      { value: 'Kirsty', label: 'Kirsty' },
+      { value: 'Dibo', label: 'Dibo' },
+      { value: 'Unassigned', label: 'Unassigned' },
+    ],
+  },
+  {
+    key: 'followUpStatus',
+    label: 'Follow-Up',
+    options: [
+      { value: 'Pending', label: 'Pending' },
+      { value: 'Completed', label: 'Completed' },
+      { value: 'Overdue', label: 'Overdue' },
+    ],
+  },
 ];
 
 export default function ActivitiesTable({ activities }: ActivitiesTableProps) {
+  const [selected, setSelected] = useState<BDActivity | null>(null);
+
   return (
     <ErrorBoundary>
       <DataTable<BDActivity>
@@ -104,7 +154,9 @@ export default function ActivitiesTable({ activities }: ActivitiesTableProps) {
         emptyTitle="No activities found"
         emptyDescription="Try adjusting your search or filter criteria."
         exportFilename="activities-export"
+        onRowClick={(row) => setSelected(row)}
       />
+      <ActivityDetail activity={selected} open={!!selected} onClose={() => setSelected(null)} />
     </ErrorBoundary>
   );
 }

@@ -29,6 +29,7 @@ const statusColorMap: Record<string, string> = {
   'On Track': 'bg-emerald-50 text-emerald-700 ring-emerald-600/10',
   Due: 'bg-amber-50 text-amber-700 ring-amber-600/10',
   Overdue: 'bg-red-50 text-red-600 ring-red-500/10',
+  Upcoming: 'bg-emerald-50 text-emerald-700 ring-emerald-600/10',
 
   // Probability
   High: 'bg-emerald-50 text-emerald-700 ring-emerald-600/10',

@@ -373,17 +373,26 @@ function mapGrant(page: any, accountLookup: Map<string, string>): AdminGrant {
 
 function mapBDActivity(page: any): BDActivity {
   const p = page.properties;
+  const activityDate = date(p, 'Date');
+  const status = select(p, 'Status') as BDActivity['status'];
+  const assignedTo = (select(p, 'Assigned To') as BDActivity['assignedTo']) || 'Unassigned';
+  const followUpDate = date(p, 'Follow-Up Date') || (activityDate ? new Date(new Date(activityDate).getTime() + 7 * 86400000).toISOString().slice(0, 10) : '');
+  const followUpStatus = (select(p, 'Follow-Up Status') as BDActivity['followUpStatus']) || (status === 'Completed' ? 'Completed' : 'Pending');
   return {
     id: page.id,
     activity: title(p, 'Activity Name') || title(p, 'Activity'),
     type: select(p, 'Type') as BDActivity['type'],
-    date: date(p, 'Date'),
-    status: select(p, 'Status') as BDActivity['status'],
+    date: activityDate,
+    status,
     firmName: text(p, 'Firm') || select(p, 'Firm'),
     cost: num(p, 'Cost'),
     location: text(p, 'Location'),
     prospectsGenerated: num(p, 'Prospects Generated'),
     attendeeCount: num(p, 'Attendee Count') || num(p, 'Attendees'),
+    assignedTo,
+    followUpDate,
+    followUpStatus,
+    followUpNotes: text(p, 'Follow-Up Notes') || '',
   };
 }
 

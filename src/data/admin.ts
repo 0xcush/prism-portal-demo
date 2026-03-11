@@ -339,18 +339,18 @@ const adminGrants: AdminGrant[] = [
 ];
 
 const bdActivities: BDActivity[] = [
-  { id: 'a1', activity: 'Philanthropy Tax Planning Lunch & Learn', type: 'Lunch & Learn', date: '2026-02-12', status: 'Completed', firmName: 'Evelyn Partners', cost: 2800, location: 'The Ivy, London', prospectsGenerated: 3, attendeeCount: 14 },
-  { id: 'a2', activity: 'Cazenove Client Event', type: 'Lunch & Learn', date: '2026-01-22', status: 'Completed', firmName: 'Cazenove Capital', cost: 3200, location: 'Cazenove Offices, London', prospectsGenerated: 2, attendeeCount: 8 },
-  { id: 'a3', activity: 'STEP Annual Conference', type: 'Conference', date: '2026-02-05', status: 'Completed', firmName: '', cost: 4500, location: 'ICC Birmingham', prospectsGenerated: 4, attendeeCount: 350 },
-  { id: 'a4', activity: 'City of London Livery Dinner', type: 'Networking Event', date: '2026-01-30', status: 'Completed', firmName: '', cost: 1800, location: 'Mansion House, London', prospectsGenerated: 1, attendeeCount: 120 },
-  { id: 'a5', activity: 'Philanthropy 101 Webinar', type: 'Webinar', date: '2026-03-06', status: 'Completed', firmName: '', cost: 350, location: 'Online', prospectsGenerated: 2, attendeeCount: 45 },
-  { id: 'a6', activity: 'Q1 Tax Planning Email Campaign', type: 'Email Campaign', date: '2026-02-20', status: 'Completed', firmName: '', cost: 200, location: 'Digital', prospectsGenerated: 1, attendeeCount: 850 },
-  { id: 'a7', activity: 'Rathbones Office Visit', type: 'Office Visit', date: '2026-03-08', status: 'Completed', firmName: 'Rathbones', cost: 150, location: 'Rathbones, London', prospectsGenerated: 0, attendeeCount: 6 },
-  { id: 'a8', activity: 'Goldman Sachs L&L', type: 'Lunch & Learn', date: '2026-03-20', status: 'Planned', firmName: 'Goldman Sachs', cost: 3500, location: 'Goldman Sachs, London', prospectsGenerated: 0, attendeeCount: 0 },
-  { id: 'a9', activity: 'Philanthropy Impact Conference', type: 'Conference', date: '2026-04-15', status: 'Planned', firmName: '', cost: 5200, location: 'QEII Centre, London', prospectsGenerated: 0, attendeeCount: 0 },
-  { id: 'a10', activity: 'JM Finn Bristol Visit', type: 'Office Visit', date: '2026-03-25', status: 'Planned', firmName: 'JM Finn', cost: 400, location: 'JM Finn, Bristol', prospectsGenerated: 0, attendeeCount: 0 },
-  { id: 'a11', activity: 'Coutts Partnership Dinner', type: 'Networking Event', date: '2026-04-02', status: 'Planned', firmName: 'Coutts', cost: 2200, location: 'The Connaught, London', prospectsGenerated: 0, attendeeCount: 0 },
-  { id: 'a12', activity: 'ESG & Philanthropy Webinar', type: 'Webinar', date: '2026-04-10', status: 'Planned', firmName: '', cost: 350, location: 'Online', prospectsGenerated: 0, attendeeCount: 0 },
+  { id: 'a1', activity: 'Philanthropy Tax Planning Lunch & Learn', type: 'Lunch & Learn', date: '2026-02-12', status: 'Completed', firmName: 'Evelyn Partners', cost: 2800, location: 'The Ivy, London', prospectsGenerated: 3, attendeeCount: 14, assignedTo: 'Kirsty', followUpDate: '2026-02-19', followUpStatus: 'Completed', followUpNotes: 'Send attendee thank-you emails and schedule 1-on-1s with warm leads' },
+  { id: 'a2', activity: 'Cazenove Client Event', type: 'Lunch & Learn', date: '2026-01-22', status: 'Completed', firmName: 'Cazenove Capital', cost: 3200, location: 'Cazenove Offices, London', prospectsGenerated: 2, attendeeCount: 8, assignedTo: 'Dibo', followUpDate: '2026-01-29', followUpStatus: 'Completed', followUpNotes: 'Share slide deck with prospects and confirm next meeting dates' },
+  { id: 'a3', activity: 'STEP Annual Conference', type: 'Conference', date: '2026-02-05', status: 'Completed', firmName: '', cost: 4500, location: 'ICC Birmingham', prospectsGenerated: 4, attendeeCount: 350, assignedTo: 'Kirsty', followUpDate: '2026-02-12', followUpStatus: 'Completed', followUpNotes: 'Follow up with all business card contacts, add to CRM' },
+  { id: 'a4', activity: 'City of London Livery Dinner', type: 'Networking Event', date: '2026-01-30', status: 'Completed', firmName: '', cost: 1800, location: 'Mansion House, London', prospectsGenerated: 1, attendeeCount: 120, assignedTo: 'Dibo', followUpDate: '2026-02-06', followUpStatus: 'Overdue', followUpNotes: 'Send personal follow-up to Alderman Mercer re: DAF structure' },
+  { id: 'a5', activity: 'Philanthropy 101 Webinar', type: 'Webinar', date: '2026-03-06', status: 'Completed', firmName: '', cost: 350, location: 'Online', prospectsGenerated: 2, attendeeCount: 45, assignedTo: 'Kirsty', followUpDate: '2026-03-13', followUpStatus: 'Pending', followUpNotes: 'Send recording to registrants and identify engaged attendees' },
+  { id: 'a6', activity: 'Q1 Tax Planning Email Campaign', type: 'Email Campaign', date: '2026-02-20', status: 'Completed', firmName: '', cost: 200, location: 'Digital', prospectsGenerated: 1, attendeeCount: 850, assignedTo: 'Kirsty', followUpDate: '2026-03-01', followUpStatus: 'Completed', followUpNotes: 'Review click-through data, call top engagers' },
+  { id: 'a7', activity: 'Rathbones Office Visit', type: 'Office Visit', date: '2026-03-08', status: 'Completed', firmName: 'Rathbones', cost: 150, location: 'Rathbones, London', prospectsGenerated: 0, attendeeCount: 6, assignedTo: 'Dibo', followUpDate: '2026-03-15', followUpStatus: 'Pending', followUpNotes: 'Send meeting summary and proposal outline to Henry Ashmore' },
+  { id: 'a8', activity: 'Goldman Sachs L&L', type: 'Lunch & Learn', date: '2026-03-20', status: 'Planned', firmName: 'Goldman Sachs', cost: 3500, location: 'Goldman Sachs, London', prospectsGenerated: 0, attendeeCount: 0, assignedTo: 'Dibo', followUpDate: '2026-03-27', followUpStatus: 'Pending', followUpNotes: 'Prepare materials and confirm attendee list with Patricia Gresham' },
+  { id: 'a9', activity: 'Philanthropy Impact Conference', type: 'Conference', date: '2026-04-15', status: 'Planned', firmName: '', cost: 5200, location: 'QEII Centre, London', prospectsGenerated: 0, attendeeCount: 0, assignedTo: 'Kirsty', followUpDate: '2026-04-22', followUpStatus: 'Pending', followUpNotes: 'Book speaking slot, prepare stand materials and handouts' },
+  { id: 'a10', activity: 'JM Finn Bristol Visit', type: 'Office Visit', date: '2026-03-25', status: 'Planned', firmName: 'JM Finn', cost: 400, location: 'JM Finn, Bristol', prospectsGenerated: 0, attendeeCount: 0, assignedTo: 'Kirsty', followUpDate: '2026-04-01', followUpStatus: 'Pending', followUpNotes: 'Coordinate with Thomas Barrington on agenda and attendees' },
+  { id: 'a11', activity: 'Coutts Partnership Dinner', type: 'Networking Event', date: '2026-04-02', status: 'Planned', firmName: 'Coutts', cost: 2200, location: 'The Connaught, London', prospectsGenerated: 0, attendeeCount: 0, assignedTo: 'Dibo', followUpDate: '2026-04-09', followUpStatus: 'Pending', followUpNotes: 'Finalise guest list and seating plan with Coutts team' },
+  { id: 'a12', activity: 'ESG & Philanthropy Webinar', type: 'Webinar', date: '2026-04-10', status: 'Planned', firmName: '', cost: 350, location: 'Online', prospectsGenerated: 0, attendeeCount: 0, assignedTo: 'Unassigned', followUpDate: '2026-04-17', followUpStatus: 'Pending', followUpNotes: 'Draft webinar content and set up registration page' },
 ];
 
 const quarterlyKPIs: QuarterlyKPIs[] = [
@@ -523,3 +523,30 @@ export function formatDate(dateStr: string): string {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 }
+
+export function computeReminderStatus(nextReminderDate: string): 'Upcoming' | 'Due' | 'Overdue' {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const reminder = new Date(nextReminderDate);
+  reminder.setHours(0, 0, 0, 0);
+  const diffDays = Math.floor((reminder.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  if (diffDays < 0) return 'Overdue';
+  if (diffDays <= 7) return 'Due';
+  return 'Upcoming';
+}
+
+export function daysBetween(dateA: string, dateB: string): number {
+  const a = new Date(dateA);
+  const b = new Date(dateB);
+  return Math.floor(Math.abs(b.getTime() - a.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+export const TAG_COLORS: Record<string, string> = {
+  'Invite to Event': 'bg-purple-50 text-purple-700',
+  'Add to Mailing List': 'bg-blue-50 text-blue-700',
+  'Key Decision Maker': 'bg-amber-50 text-amber-700',
+  'VIP': 'bg-red-50 text-red-600',
+  'New Contact': 'bg-slate-100 text-slate-600',
+  'MailChimp': 'bg-orange-50 text-orange-700',
+  'Events Gaslight': 'bg-emerald-50 text-emerald-700',
+};

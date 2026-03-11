@@ -9,7 +9,7 @@ interface SlidePanelProps {
   width?: string;
 }
 
-export default function SlidePanel({ open, onClose, title, subtitle, children, width = 'max-w-lg' }: SlidePanelProps) {
+export default function SlidePanel({ open, onClose, title, subtitle, children, width = 'max-w-2xl' }: SlidePanelProps) {
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -33,7 +33,7 @@ export default function SlidePanel({ open, onClose, title, subtitle, children, w
     <div className="fixed inset-0 z-50 flex justify-end">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -46,14 +46,14 @@ export default function SlidePanel({ open, onClose, title, subtitle, children, w
         aria-label={title || 'Detail panel'}
       >
         {/* Header */}
-        <div className="flex-shrink-0 bg-white border-b border-slate-100 px-6 py-4 flex items-start justify-between">
-          <div className="min-w-0">
-            {title && <h2 className="text-lg font-semibold text-slate-800 truncate">{title}</h2>}
-            {subtitle && <p className="text-sm text-slate-400 mt-0.5 truncate">{subtitle}</p>}
+        <div className="flex-shrink-0 bg-white border-b border-slate-200 px-6 py-5 flex items-start justify-between">
+          <div className="min-w-0 pr-4">
+            {title && <h2 className="text-xl font-semibold text-slate-800 truncate">{title}</h2>}
+            {subtitle && <p className="text-sm text-slate-400 mt-1 truncate">{subtitle}</p>}
           </div>
           <button
             onClick={onClose}
-            className="ml-4 flex-shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors focus-visible:ring-2 focus-visible:ring-navy-600 focus-visible:ring-offset-2"
+            className="flex-shrink-0 p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors focus-visible:ring-2 focus-visible:ring-navy-600 focus-visible:ring-offset-2"
             aria-label="Close panel"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,8 +62,8 @@ export default function SlidePanel({ open, onClose, title, subtitle, children, w
           </button>
         </div>
 
-        {/* Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-6">{children}</div>
+        {/* Body — scrollable */}
+        <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-6">{children}</div>
       </div>
     </div>
   );

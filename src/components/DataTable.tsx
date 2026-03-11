@@ -29,6 +29,8 @@ export interface DataTableProps<T> {
   emptyTitle?: string;
   emptyDescription?: string;
   exportFilename?: string;
+  maxRows?: number;
+  viewAllHref?: string;
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -52,6 +54,8 @@ export default function DataTable<T extends Record<string, any>>({
   emptyTitle = 'No results found',
   emptyDescription = 'Try adjusting your search or filters.',
   exportFilename,
+  maxRows,
+  viewAllHref,
 }: DataTableProps<T>) {
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
@@ -153,6 +157,9 @@ export default function DataTable<T extends Record<string, any>>({
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  const isTruncated = maxRows != null && processed.length > maxRows;
+  const displayRows = isTruncated ? processed.slice(0, maxRows) : processed;
 
   const activeFilterCount = Object.values(activeFilters).filter((v) => v && v !== 'all').length;
 
@@ -275,15 +282,17 @@ export default function DataTable<T extends Record<string, any>>({
           </div>
 
           {/* Results count */}
-          <div className="mt-2 text-xs text-slate-400">
-            {processed.length === data.length
-              ? `${data.length} record${data.length === 1 ? '' : 's'}`
-              : `${processed.length} of ${data.length} records`}
-          </div>
+          {!maxRows && (
+            <div className="mt-2 text-xs text-slate-400">
+              {processed.length === data.length
+                ? `${data.length} record${data.length === 1 ? '' : 's'}`
+                : `${processed.length} of ${data.length} records`}
+            </div>
+          )}
         </div>
 
         {/* Table */}
-        {processed.length === 0 ? (
+        {displayRows.length === 0 ? (
           <EmptyState
             title={emptyTitle}
             description={emptyDescription}
@@ -307,7 +316,7 @@ export default function DataTable<T extends Record<string, any>>({
                         <th
                           key={col.key}
                           onClick={sortable ? () => handleSort(col.key) : undefined}
-                          className={`px-5 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider whitespace-nowrap ${
+                          className={`px-3 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider whitespace-nowrap ${
                             col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left'
                           } ${sortable ? 'cursor-pointer select-none hover:text-slate-600 transition-colors' : ''} ${
                             i === 0
@@ -342,7 +351,7 @@ export default function DataTable<T extends Record<string, any>>({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {processed.map((row, rowIdx) => (
+                  {displayRows.map((row, rowIdx) => (
                     <tr
                       key={(row as any).id || rowIdx}
                       className={`hover:bg-slate-50/50 transition-colors ${onRowClick ? 'cursor-pointer' : ''}`}
@@ -363,7 +372,7 @@ export default function DataTable<T extends Record<string, any>>({
                       {columns.map((col, colIdx) => (
                         <td
                           key={col.key}
-                          className={`px-5 py-3.5 text-sm ${
+                          className={`px-3 py-3 text-sm ${
                             col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left'
                           } ${
                             colIdx === 0
@@ -382,7 +391,7 @@ export default function DataTable<T extends Record<string, any>>({
 
             {/* Mobile card view */}
             <div className="md:hidden divide-y divide-slate-100">
-              {processed.map((row, rowIdx) => (
+              {displayRows.map((row, rowIdx) => (
                 <div
                   key={(row as any).id || rowIdx}
                   className={`p-4 ${onRowClick ? 'cursor-pointer hover:bg-slate-50/50 active:bg-slate-100/50' : ''}`}
@@ -405,6 +414,30 @@ export default function DataTable<T extends Record<string, any>>({
                 </div>
               ))}
             </div>
+
+            {/* View all footer when truncated */}
+            {isTruncated && (
+              <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                <span className="text-xs text-slate-400">
+                  Showing {displayRows.length} of {processed.length} records
+                </span>
+                {viewAllHref ? (
+                  <a
+                    href={viewAllHref}
+                    className="text-sm font-medium text-navy-600 hover:text-navy-700 inline-flex items-center gap-1 transition-colors"
+                  >
+                    View all {processed.length}
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                ) : (
+                  <span className="text-xs text-slate-400">
+                    {processed.length - displayRows.length} more
+                  </span>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>

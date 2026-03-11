@@ -35,8 +35,11 @@ function confidenceColor(c: number): string {
 }
 
 function formatDate(iso: string): string {
+  if (!iso) return '—';
   try {
-    return new Date(iso).toLocaleString('en-GB', {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleString('en-GB', {
       day: 'numeric', month: 'short', year: 'numeric',
       hour: '2-digit', minute: '2-digit',
     });

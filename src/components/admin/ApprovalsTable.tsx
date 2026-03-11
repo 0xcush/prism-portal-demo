@@ -28,8 +28,11 @@ function confidenceBar(c: number): { color: string; width: string; label: string
 }
 
 function formatDate(iso: string): string {
+  if (!iso) return '—';
   try {
-    return new Date(iso).toLocaleDateString('en-GB', {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleDateString('en-GB', {
       day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
     });
   } catch { return iso; }

@@ -15,10 +15,11 @@ const columns: ColumnDef<Prospect>[] = [
   {
     key: 'name',
     header: 'Name',
+    className: 'min-w-[200px] max-w-[260px]',
     render: (row) => (
       <div>
-        <p className="font-medium text-slate-900">{row.name}</p>
-        {row.referringFirm && <p className="text-xs text-slate-400">via {row.referringFirm}</p>}
+        <p className="font-medium text-slate-900 line-clamp-2">{row.name}</p>
+        {row.referringFirm && <p className="text-xs text-slate-400 truncate">via {row.referringFirm}</p>}
       </div>
     ),
   },

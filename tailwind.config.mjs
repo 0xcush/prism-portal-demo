@@ -48,7 +48,8 @@ export default {
       animation: {
         'count-up': 'countUp 0.6s ease-out forwards',
         'pulse-subtle': 'pulseSubtle 2s ease-in-out infinite',
-        'slide-in': 'slideIn 0.2s ease-out',
+        'slide-in': 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        'fade-in': 'fadeIn 0.3s ease-out',
         'fade-up': 'fadeUp 0.4s ease-out both',
         'fade-up-1': 'fadeUp 0.4s ease-out 0.05s both',
         'fade-up-2': 'fadeUp 0.4s ease-out 0.1s both',
@@ -65,8 +66,12 @@ export default {
           '50%': { opacity: '0.7' },
         },
         slideIn: {
-          '0%': { opacity: '0', transform: 'translateX(-8px)' },
-          '100%': { opacity: '1', transform: 'translateX(0)' },
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
         fadeUp: {
           '0%': { opacity: '0', transform: 'translateY(8px)' },

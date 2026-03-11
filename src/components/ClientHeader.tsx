@@ -15,11 +15,10 @@ export default function ClientHeader({
   status,
   onboardedDate,
 }: ClientHeaderProps) {
-  const formattedDate = new Date(onboardedDate).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  const d = onboardedDate ? new Date(onboardedDate) : null;
+  const formattedDate = d && !isNaN(d.getTime())
+    ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '—';
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">

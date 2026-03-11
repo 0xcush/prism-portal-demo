@@ -1,0 +1,175 @@
+---
+import GranteeLayout from '../../layouts/GranteeLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import GrantProgressStepper from '../../components/grantee/GrantProgressStepper';
+import StatusBadge from '../../components/StatusBadge';
+import { getGrantees, getGranteeById, getGrantsForCharity, getPaymentsForCharity, formatCurrency, formatDate } from '../../data/grantees';
+
+const base = import.meta.env.BASE_URL;
+const charityId = Astro.url.searchParams.get('charity') || getGrantees()[0]?.id || '';
+const charity = getGranteeById(charityId);
+const grants = getGrantsForCharity(charityId);
+const payments = getPaymentsForCharity(charityId);
+
+const activeGrants = grants.filter(g => !['Paid', 'Declined'].includes(g.stage));
+const completedGrants = grants.filter(g => g.stage === 'Paid');
+const declinedGrants = grants.filter(g => g.stage === 'Declined');
+const totalAwarded = grants.filter(g => ['Approved', 'Paid'].includes(g.stage)).reduce((s, g) => s + g.amount, 0);
+
+// Build a payment lookup: grantId → total received
+const receivedByGrant = new Map<string, number>();
+for (const p of payments) {
+  if (p.status === 'Received' || p.status === 'Sent') {
+    receivedByGrant.set(p.grantId, (receivedByGrant.get(p.grantId) || 0) + p.amount);
+  }
+}
+---
+
+{charity ? (
+  <GranteeLayout title="Grants - Prism" activePage="grants" charityName={charity.charityName}>
+    <Breadcrumbs items={[{label:"Grantee", href:`${base}grantee`}, {label:charity.charityName, href:`${base}grantee/dashboard?charity=${charityId}`}, {label:"Grants"}]} />
+
+    <div class="mb-8 animate-fade-up">
+      <h2 class="text-2xl font-bold text-slate-900">Grants</h2>
+      <p class="text-sm text-slate-500 mt-1">All grants for {charity.charityName}</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 animate-fade-up">
+        <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Grants</span>
+        <p class="text-2xl font-bold text-slate-900 mt-2">{grants.length}</p>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 animate-fade-up-1">
+        <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Active</span>
+        <p class="text-2xl font-bold text-emerald-700 mt-2">{activeGrants.length}</p>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 animate-fade-up-2">
+        <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Completed</span>
+        <p class="text-2xl font-bold text-slate-900 mt-2">{completedGrants.length}</p>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 animate-fade-up-3">
+        <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Awarded</span>
+        <p class="text-2xl font-bold text-emerald-700 mt-2">{formatCurrency(totalAwarded)}</p>
+      </div>
+    </div>
+
+    <!-- Grant Progress Stepper -->
+    {activeGrants.length > 0 && (
+      <div class="mb-8 animate-fade-up-4">
+        <h3 class="text-base font-semibold text-slate-900 mb-4">Active Grants</h3>
+        <GrantProgressStepper grants={activeGrants} client:load />
+      </div>
+    )}
+
+    <!-- All Grants Table -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-fade-up-4">
+      <div class="px-6 py-4 border-b border-slate-100">
+        <h3 class="text-base font-semibold text-slate-900">All Grants</h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-slate-50 text-left text-xs text-slate-500 uppercase tracking-wider">
+              <th class="px-4 py-3 font-medium">Grant Name</th>
+              <th class="px-4 py-3 font-medium text-right">Amount</th>
+              <th class="px-4 py-3 font-medium text-right">Received</th>
+              <th class="px-4 py-3 font-medium">Stage</th>
+              <th class="px-4 py-3 font-medium">Requested</th>
+              <th class="px-4 py-3 font-medium">Approved</th>
+              <th class="px-4 py-3 font-medium">Donor</th>
+              <th class="px-4 py-3 font-medium">Issue Area</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            {grants.map(g => {
+              const received = receivedByGrant.get(g.id) || 0;
+              const pct = g.amount > 0 ? Math.round((received / g.amount) * 100) : 0;
+              return (
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="px-4 py-3">
+                    <p class="font-medium text-slate-900">{g.grantName}</p>
+                    {g.notes && <p class="text-xs text-slate-400 mt-0.5 max-w-xs truncate">{g.notes}</p>}
+                  </td>
+                  <td class="px-4 py-3 text-right font-medium text-slate-700">{formatCurrency(g.amount)}</td>
+                  <td class="px-4 py-3 text-right">
+                    {received > 0 ? (
+                      <div>
+                        <span class="font-medium text-emerald-700">{formatCurrency(received)}</span>
+                        <span class="text-xs text-slate-400 ml-1">({pct}%)</span>
+                      </div>
+                    ) : (
+                      <span class="text-slate-400">—</span>
+                    )}
+                  </td>
+                  <td class="px-4 py-3">
+                    <StatusBadge status={g.stage} />
+                  </td>
+                  <td class="px-4 py-3 text-slate-600">{formatDate(g.dateRequested)}</td>
+                  <td class="px-4 py-3 text-slate-600">{g.dateApproved ? formatDate(g.dateApproved) : '—'}</td>
+                  <td class="px-4 py-3 text-slate-600">{g.donorName}</td>
+                  <td class="px-4 py-3 text-xs text-slate-600">{g.issueArea}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Completed Grants -->
+    {completedGrants.length > 0 && (
+      <div class="mt-8 animate-fade-up">
+        <h3 class="text-base font-semibold text-slate-900 mb-4">Completed Grants</h3>
+        <div class="grid gap-4 md:grid-cols-2">
+          {completedGrants.map(g => {
+            const received = receivedByGrant.get(g.id) || 0;
+            return (
+              <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+                <div class="flex items-start justify-between mb-3">
+                  <div>
+                    <h4 class="text-sm font-semibold text-slate-900">{g.grantName}</h4>
+                    <p class="text-xs text-slate-500 mt-0.5">{g.issueArea}</p>
+                  </div>
+                  <StatusBadge status="Paid" />
+                </div>
+                <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                  <div>
+                    <p class="text-xs text-slate-400 uppercase">Awarded</p>
+                    <p class="text-sm font-bold text-slate-900">{formatCurrency(g.amount)}</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-xs text-slate-400 uppercase">Received</p>
+                    <p class="text-sm font-bold text-emerald-700">{formatCurrency(received)}</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-xs text-slate-400 uppercase">Paid</p>
+                    <p class="text-sm text-slate-600">{g.datePaid ? formatDate(g.datePaid) : '—'}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )}
+  </GranteeLayout>
+) : (
+  <GranteeLayout title="Grants - Prism" activePage="grants">
+    <div class="text-center py-16 animate-fade-up">
+      <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+        </svg>
+      </div>
+      <h2 class="text-xl font-semibold text-slate-800 mb-2">Charity not found</h2>
+      <p class="text-slate-500 mb-6">The charity you're looking for doesn't exist or has been removed.</p>
+      <a
+        href={`${base}grantee`}
+        class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-medium hover:bg-emerald-800 transition-colors"
+      >
+        Back to Charity Selector
+      </a>
+    </div>
+  </GranteeLayout>
+)}

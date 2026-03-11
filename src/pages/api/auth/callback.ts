@@ -1,75 +1,145 @@
 /**
- * Auth callback — receives tokens from backend, sets httpOnly cookie, redirects.
- *
- * Two flows:
- *   1. Entra SSO: backend redirects here with ?token=JWT&refresh_token=...
- *   2. Magic Link: email links here with ?magic_token=... — we exchange it for a JWT
+ * OAuth callback — exchanges Azure AD authorization code for tokens,
+ * decodes the ID token, creates a signed session cookie, and redirects.
  */
 import type { APIRoute } from 'astro';
-import { verifyMagicLink } from '../../../lib/api-client';
+import { createSessionCookie } from '../../../middleware';
 
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: import.meta.env.PROD,
-  sameSite: 'lax' as const,
-  path: '/',
-  maxAge: 60 * 60, // 1 hour (matches JWT expiry)
-};
+const SESSION_COOKIE = 'prism_session';
+const SESSION_MAX_AGE = 8 * 60 * 60; // 8 hours
 
-function portalRedirect(portal: string): string {
-  switch (portal) {
-    case 'admin': return '/admin';
-    case 'grantee': return '/grantee';
-    default: return '/dashboard';
+/** Decode a JWT payload without cryptographic verification. */
+function decodeJwtPayload(token: string): Record<string, unknown> | null {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    return JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf-8'));
+  } catch {
+    return null;
   }
 }
 
-function extractPortalFromJwt(token: string): string {
-  try {
-    const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64url').toString());
-    return payload.portal || 'donor';
-  } catch {
-    return 'donor';
+/** Map Azure AD roles/groups to portal role. */
+function mapRole(claims: Record<string, unknown>): { role: string; portal: string } {
+  // Check Azure AD app roles (configured in App Registration > App Roles)
+  const roles = (claims.roles || []) as string[];
+  // Check group membership claims
+  const groups = (claims.groups || []) as string[];
+  // Check wids (well-known directory role IDs)
+  const wids = (claims.wids || []) as string[];
+
+  // Admin: explicit admin role, or Global Admin wid, or specific group
+  if (
+    roles.includes('Admin') ||
+    roles.includes('admin') ||
+    wids.includes('62e90394-69f5-4237-9190-012177145e10') // Global Administrator
+  ) {
+    return { role: 'admin', portal: 'admin' };
   }
+
+  // Grantee
+  if (roles.includes('Grantee') || roles.includes('grantee')) {
+    return { role: 'grantee', portal: 'grantee' };
+  }
+
+  // Donor
+  if (roles.includes('Donor') || roles.includes('donor')) {
+    return { role: 'donor', portal: 'donor' };
+  }
+
+  // Default: admin (for initial setup when no roles configured yet)
+  return { role: 'admin', portal: 'admin' };
 }
 
 export const GET: APIRoute = async ({ url, cookies, redirect }) => {
-  const token = url.searchParams.get('token');
-  const refreshToken = url.searchParams.get('refresh_token');
-  const magicToken = url.searchParams.get('magic_token');
+  const code = url.searchParams.get('code');
+  const error = url.searchParams.get('error');
 
-  // Flow 1: Direct JWT (from Entra SSO redirect)
-  if (token) {
-    cookies.set('prism_token', token, COOKIE_OPTIONS);
-    if (refreshToken) {
-      cookies.set('prism_refresh', refreshToken, {
-        ...COOKIE_OPTIONS,
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-      });
-    }
-    const portal = extractPortalFromJwt(token);
-    return redirect(portalRedirect(portal));
+  if (error) {
+    console.error('[auth/callback] Azure AD error:', error, url.searchParams.get('error_description'));
+    return redirect('/login?error=auth_failed');
   }
 
-  // Flow 2: Magic link token exchange
-  if (magicToken) {
-    try {
-      const result = await verifyMagicLink(magicToken);
-      cookies.set('prism_token', result.accessToken, COOKIE_OPTIONS);
-      if (result.refreshToken) {
-        cookies.set('prism_refresh', result.refreshToken, {
-          ...COOKIE_OPTIONS,
-          maxAge: 60 * 60 * 24 * 7,
-        });
-      }
-      const portal = extractPortalFromJwt(result.accessToken);
-      return redirect(portalRedirect(portal));
-    } catch (err) {
-      console.error('[auth/callback] Magic link verification failed:', err);
-      return redirect('/login?error=invalid_link');
-    }
+  if (!code) {
+    return redirect('/login?error=missing_code');
   }
 
-  // No token provided
-  return redirect('/login?error=missing_token');
+  const tenantId = import.meta.env.AZURE_TENANT_ID || 'common';
+  const clientId = import.meta.env.AZURE_CLIENT_ID;
+  const clientSecret = import.meta.env.AZURE_CLIENT_SECRET;
+  const baseUrl = (import.meta.env.PUBLIC_BASE_URL || url.origin).replace(/\/$/, '');
+  const redirectUri = `${baseUrl}/api/auth/callback`;
+
+  // Exchange authorization code for tokens
+  const tokenUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
+
+  let tokenResponse: Response;
+  try {
+    tokenResponse = await fetch(tokenUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        code,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+        scope: 'openid profile email',
+      }),
+    });
+  } catch (err) {
+    console.error('[auth/callback] Token exchange network error:', err);
+    return redirect('/login?error=token_error');
+  }
+
+  if (!tokenResponse.ok) {
+    const body = await tokenResponse.text();
+    console.error('[auth/callback] Token exchange failed:', tokenResponse.status, body);
+    return redirect('/login?error=token_error');
+  }
+
+  const tokens = (await tokenResponse.json()) as {
+    id_token?: string;
+    access_token?: string;
+  };
+
+  const idToken = tokens.id_token;
+  if (!idToken) {
+    console.error('[auth/callback] No id_token in response');
+    return redirect('/login?error=token_error');
+  }
+
+  // Decode ID token claims
+  const claims = decodeJwtPayload(idToken);
+  if (!claims) {
+    console.error('[auth/callback] Failed to decode id_token');
+    return redirect('/login?error=token_error');
+  }
+
+  // Map claims to user info
+  const { role, portal } = mapRole(claims);
+  const sessionValue = createSessionCookie({
+    id: String(claims.oid || claims.sub || ''),
+    email: String(claims.preferred_username || claims.email || claims.upn || ''),
+    name: String(claims.name || ''),
+    role,
+    portal,
+  });
+
+  // Set session cookie
+  cookies.set(SESSION_COOKIE, sessionValue, {
+    httpOnly: true,
+    secure: import.meta.env.PROD,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: SESSION_MAX_AGE,
+  });
+
+  // Redirect based on role
+  const routes: Record<string, string> = {
+    admin: '/admin',
+    donor: '/dashboard',
+    grantee: '/grantee',
+  };
+  return redirect(routes[portal] || '/admin');
 };

@@ -1,52 +1,8 @@
 ---
 /**
- * Auth callback page — receives JWT from backend auth flows.
- *
- * Two entry points redirect here:
- *   1. Entra SSO: backend redirects with ?token=JWT
- *   2. Magic Link: email links to /api/auth/callback which exchanges the
- *      magic token then redirects here with ?token=JWT
- *
- * Sets an httpOnly cookie and redirects to the appropriate portal.
+ * Auth callback page — legacy redirect.
+ * The actual callback logic lives in /api/auth/callback.ts.
+ * This page handles any direct navigation here by redirecting to login.
  */
-
-const token = Astro.url.searchParams.get('token');
-if (!token) {
-  return Astro.redirect('/login');
-}
-
-// Decode JWT payload (no cryptographic verification — backend issued it)
-function decodePayload(jwt: string): Record<string, unknown> | null {
-  try {
-    const parts = jwt.split('.');
-    if (parts.length !== 3) return null;
-    return JSON.parse(Buffer.from(parts[1], 'base64url').toString());
-  } catch {
-    return null;
-  }
-}
-
-const payload = decodePayload(token);
-if (!payload) {
-  return Astro.redirect('/login');
-}
-
-// Set HttpOnly cookie
-const isProduction = import.meta.env.PROD;
-Astro.cookies.set('prism_token', token, {
-  httpOnly: true,
-  secure: isProduction,
-  sameSite: 'strict',
-  path: '/',
-  maxAge: 60 * 60, // 1 hour
-});
-
-// Redirect based on portal type
-const portal = String(payload.portal || 'donor');
-const routes: Record<string, string> = {
-  admin: '/admin',
-  donor: '/dashboard',
-  grantee: '/grantee',
-};
-return Astro.redirect(routes[portal] || '/dashboard');
+return Astro.redirect('/login');
 ---

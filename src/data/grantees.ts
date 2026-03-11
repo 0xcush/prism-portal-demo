@@ -44,6 +44,8 @@ export interface GranteeGrant {
   requiredDocuments: { name: string; status: string; submittedDate: string | null; notes: string }[];
   /** @deprecated Use getPaymentsForCharity() */
   paymentRef: string | null;
+  reportDueDate: string | null;
+  reportStatus: 'Not Due' | 'Due' | 'Submitted' | 'Overdue';
 }
 
 export interface DDDocument {
@@ -141,6 +143,149 @@ const grantees: Grantee[] = [
     totalReceived: 195_000,
     activeGrants: 3,
   },
+  {
+    id: 'roh',
+    charityName: 'Royal Opera House',
+    name: 'Royal Opera House',
+    charityNumber: '211775',
+    contactName: 'Victoria Fleming',
+    contactPerson: 'Victoria Fleming',
+    contactEmail: 'grants@example-roh.org',
+    address: 'Bow Street, London WC2E 9DD',
+    sector: 'Arts & Culture',
+    totalReceived: 120_000,
+    activeGrants: 2,
+  },
+  {
+    id: 'eton',
+    charityName: 'Eton College Foundation',
+    name: 'Eton College Foundation',
+    charityNumber: '1139086',
+    contactName: 'Philip Hargreaves',
+    contactPerson: 'Philip Hargreaves',
+    contactEmail: 'grants@example-eton.org',
+    address: 'Eton College, Windsor SL4 6DW',
+    sector: 'Education',
+    totalReceived: 200_000,
+    activeGrants: 1,
+  },
+  {
+    id: 'redcross',
+    charityName: 'British Red Cross',
+    name: 'British Red Cross',
+    charityNumber: '220949',
+    contactName: 'Aisha Mahmood',
+    contactPerson: 'Aisha Mahmood',
+    contactEmail: 'grants@example-redcross.org',
+    address: '44 Moorfields, London EC2Y 9AL',
+    sector: 'Humanitarian',
+    totalReceived: 100_000,
+    activeGrants: 1,
+  },
+  {
+    id: 'felix',
+    charityName: 'The Felix Project',
+    name: 'The Felix Project',
+    charityNumber: '1168183',
+    contactName: 'Sophie Tremblay',
+    contactPerson: 'Sophie Tremblay',
+    contactEmail: 'grants@example-felix.org',
+    address: 'Unit 6, Poplar Business Park, London E14 0BF',
+    sector: 'Poverty & Food',
+    totalReceived: 45_000,
+    activeGrants: 1,
+  },
+  {
+    id: 'mind',
+    charityName: 'Mind',
+    name: 'Mind',
+    charityNumber: '219830',
+    contactName: 'Dr Liam Patterson',
+    contactPerson: 'Dr Liam Patterson',
+    contactEmail: 'grants@example-mind.org',
+    address: '2 Redman Place, London E20 1JQ',
+    sector: 'Mental Health',
+    totalReceived: 280_000,
+    activeGrants: 2,
+  },
+  {
+    id: 'nlt',
+    charityName: 'National Literacy Trust',
+    name: 'National Literacy Trust',
+    charityNumber: '1116260',
+    contactName: 'Emma Richardson',
+    contactPerson: 'Emma Richardson',
+    contactEmail: 'grants@example-nlt.org',
+    address: '68 South Lambeth Road, London SW8 1RL',
+    sector: 'Education',
+    totalReceived: 85_000,
+    activeGrants: 1,
+  },
+  {
+    id: 'mcs',
+    charityName: 'Marine Conservation Society',
+    name: 'Marine Conservation Society',
+    charityNumber: '1004005',
+    contactName: 'Dr Hannah Wolfe',
+    contactPerson: 'Dr Hannah Wolfe',
+    contactEmail: 'grants@example-mcs.org',
+    address: 'Overross House, Ross-on-Wye HR9 7QQ',
+    sector: 'Environment',
+    totalReceived: 150_000,
+    activeGrants: 1,
+  },
+  {
+    id: 'woodland',
+    charityName: 'Woodland Trust',
+    name: 'Woodland Trust',
+    charityNumber: '294344',
+    contactName: 'Robert Ellison',
+    contactPerson: 'Robert Ellison',
+    contactEmail: 'grants@example-woodland.org',
+    address: 'Kempton Way, Grantham NG31 6LL',
+    sector: 'Environment',
+    totalReceived: 95_000,
+    activeGrants: 1,
+  },
+  {
+    id: 'cruk',
+    charityName: 'Cancer Research UK',
+    name: 'Cancer Research UK',
+    charityNumber: '1089464',
+    contactName: 'Professor Diane Hughes',
+    contactPerson: 'Professor Diane Hughes',
+    contactEmail: 'grants@example-cruk.org',
+    address: '2 Redman Place, London E20 1JQ',
+    sector: 'Medical Research',
+    totalReceived: 400_000,
+    activeGrants: 1,
+  },
+  {
+    id: 'nyo',
+    charityName: 'National Youth Orchestra',
+    name: 'National Youth Orchestra',
+    charityNumber: '263878',
+    contactName: 'Margaret Chen',
+    contactPerson: 'Margaret Chen',
+    contactEmail: 'grants@example-nyo.org',
+    address: 'Kings Place, 90 York Way, London N1 9AG',
+    sector: 'Arts & Culture',
+    totalReceived: 60_000,
+    activeGrants: 1,
+  },
+  {
+    id: 'vam',
+    charityName: 'Victoria & Albert Museum',
+    name: 'Victoria & Albert Museum',
+    charityNumber: '312058',
+    contactName: 'Dr Nicholas Harwell',
+    contactPerson: 'Dr Nicholas Harwell',
+    contactEmail: 'grants@example-vam.org',
+    address: 'Cromwell Road, London SW7 2RL',
+    sector: 'Arts & Culture',
+    totalReceived: 0,
+    activeGrants: 0,
+  },
 ];
 
 // ── Mock data: Grants ──────────────────────────────────────────────────────
@@ -169,6 +314,8 @@ const grants: GranteeGrant[] = [
       { name: 'Bank Verification Letter', status: 'Verified', submittedDate: '2025-06-15', notes: '' },
     ],
     paymentRef: 'PRISM-2025-0722-NSPCC-1',
+    reportDueDate: '2026-01-22',
+    reportStatus: 'Submitted',
   },
   {
     id: 'gr-nspcc-002',
@@ -192,6 +339,8 @@ const grants: GranteeGrant[] = [
       { name: 'Bank Verification Letter', status: 'Verified', submittedDate: '2025-11-06', notes: '' },
     ],
     paymentRef: null,
+    reportDueDate: '2026-06-01',
+    reportStatus: 'Not Due',
   },
   {
     id: 'gr-nspcc-003',
@@ -215,6 +364,8 @@ const grants: GranteeGrant[] = [
       { name: 'Impact Measurement Framework', status: 'Required', submittedDate: null, notes: 'Requested 28 Jan' },
     ],
     paymentRef: null,
+    reportDueDate: null,
+    reportStatus: 'Not Due',
   },
 
   // ── Tate Foundation (2 grants) ──────────────────────────────────────────
@@ -240,6 +391,8 @@ const grants: GranteeGrant[] = [
       { name: 'Bank Verification Letter', status: 'Verified', submittedDate: '2025-04-23', notes: '' },
     ],
     paymentRef: 'PRISM-2025-0602-TATE-1',
+    reportDueDate: '2025-12-02',
+    reportStatus: 'Submitted',
   },
   {
     id: 'gr-tate-002',
@@ -263,6 +416,8 @@ const grants: GranteeGrant[] = [
       { name: 'Bank Verification Letter', status: 'Required', submittedDate: null, notes: '' },
     ],
     paymentRef: null,
+    reportDueDate: null,
+    reportStatus: 'Not Due',
   },
 
   // ── British Heart Foundation (4 grants) ─────────────────────────────────
@@ -288,6 +443,8 @@ const grants: GranteeGrant[] = [
       { name: 'Bank Verification Letter', status: 'Verified', submittedDate: '2025-03-13', notes: '' },
     ],
     paymentRef: 'PRISM-2025-0428-BHF-1',
+    reportDueDate: '2025-10-28',
+    reportStatus: 'Submitted',
   },
   {
     id: 'gr-bhf-002',
@@ -311,6 +468,8 @@ const grants: GranteeGrant[] = [
       { name: 'Bank Verification Letter', status: 'Verified', submittedDate: '2025-08-25', notes: '' },
     ],
     paymentRef: 'PRISM-2025-1001-BHF-3',
+    reportDueDate: '2026-04-01',
+    reportStatus: 'Due',
   },
   {
     id: 'gr-bhf-003',
@@ -334,6 +493,8 @@ const grants: GranteeGrant[] = [
       { name: 'Bank Verification Letter', status: 'Verified', submittedDate: '2025-12-08', notes: '' },
     ],
     paymentRef: null,
+    reportDueDate: null,
+    reportStatus: 'Not Due',
   },
   {
     id: 'gr-bhf-004',
@@ -357,6 +518,8 @@ const grants: GranteeGrant[] = [
       { name: 'Data Protection Impact Assessment', status: 'Required', submittedDate: null, notes: 'AI/ML project — DPIA mandatory' },
     ],
     paymentRef: null,
+    reportDueDate: null,
+    reportStatus: 'Not Due',
   },
 
   // ── WWF UK (2 grants) ──────────────────────────────────────────────────
@@ -382,6 +545,8 @@ const grants: GranteeGrant[] = [
       { name: 'Bank Verification Letter', status: 'Verified', submittedDate: '2025-05-17', notes: '' },
     ],
     paymentRef: 'PRISM-2025-0701-WWF-1',
+    reportDueDate: '2026-01-01',
+    reportStatus: 'Overdue',
   },
   {
     id: 'gr-wwf-002',
@@ -405,6 +570,8 @@ const grants: GranteeGrant[] = [
       { name: 'Safeguarding Policy (Schools)', status: 'Required', submittedDate: null, notes: 'DfE-compliant policy needed' },
     ],
     paymentRef: null,
+    reportDueDate: null,
+    reportStatus: 'Not Due',
   },
 
   // ── Shelter (3 grants) ──────────────────────────────────────────────────
@@ -429,6 +596,8 @@ const grants: GranteeGrant[] = [
       { name: 'Bank Verification Letter', status: 'Verified', submittedDate: '2025-07-04', notes: '' },
     ],
     paymentRef: 'PRISM-2025-0812-SHELT-1',
+    reportDueDate: '2026-02-12',
+    reportStatus: 'Submitted',
   },
   {
     id: 'gr-shelter-002',
@@ -452,6 +621,8 @@ const grants: GranteeGrant[] = [
       { name: 'Bank Verification Letter', status: 'Verified', submittedDate: '2025-11-21', notes: '' },
     ],
     paymentRef: null,
+    reportDueDate: null,
+    reportStatus: 'Not Due',
   },
   {
     id: 'gr-shelter-003',
@@ -475,6 +646,8 @@ const grants: GranteeGrant[] = [
       { name: 'Bank Verification Letter', status: 'Required', submittedDate: null, notes: '' },
     ],
     paymentRef: null,
+    reportDueDate: null,
+    reportStatus: 'Not Due',
   },
 ];
 

@@ -1,0 +1,1 @@
+function n(e){return e>=1e6?`£${(e/1e6).toFixed(1)}M`:e>=1e3?`£${(e/1e3).toFixed(0)}K`:`£${e.toLocaleString()}`}function o(e){return`£${e.toLocaleString("en-GB")}`}function a(e){const t=new Date(e),r=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];return`${t.getDate()} ${r[t.getMonth()]} ${t.getFullYear()}`}export{o as a,n as b,a as f};

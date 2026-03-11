@@ -1,0 +1,1 @@
+function n(t){return"£"+t.toLocaleString("en-GB",{minimumFractionDigits:0,maximumFractionDigits:0})}function r(t){return t?new Date(t).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}):"—"}export{r as a,n as f};

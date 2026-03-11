@@ -5,4 +5,4 @@ function getRequestToken() {
   return requestContext.getStore()?.token;
 }
 
-export { getRequestToken as g };
+export { getRequestToken as g, requestContext as r };

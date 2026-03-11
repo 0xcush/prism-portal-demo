@@ -1,6 +1,8 @@
 export { renderers } from '../../../renderers.mjs';
 
-const GET = async ({ cookies, redirect }) => {
+const SESSION_COOKIE = "prism_session";
+const GET = async ({ cookies, redirect, url }) => {
+  cookies.delete(SESSION_COOKIE, { path: "/" });
   cookies.delete("prism_token", { path: "/" });
   cookies.delete("prism_refresh", { path: "/" });
   return redirect("/login");

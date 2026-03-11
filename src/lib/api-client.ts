@@ -142,6 +142,121 @@ export async function fetchAllAdminData(token?: string): Promise<{
   }
 }
 
+// ── Admin portal endpoints (try backend, fall back to local API) ───────
+
+import type { Approval } from '../components/admin/ApprovalDetail';
+
+export interface DashboardStats {
+  totalProspects: number;
+  totalFirms: number;
+  totalAccounts: number;
+  activeAccounts: number;
+  totalGrants: number;
+  pendingGrants: number;
+  paidGrants: number;
+  totalAUM: number;
+  totalGrantValue: number;
+}
+
+export async function fetchDashboardStats(token?: string): Promise<DashboardStats | null> {
+  if (isApiEnabled()) {
+    try {
+      return await apiFetch<DashboardStats>('/api/v1/stats', token);
+    } catch { /* fall through */ }
+  }
+  try {
+    const res = await fetch('/api/admin/stats');
+    if (res.ok) return (await res.json()) as DashboardStats;
+  } catch { /* ignore */ }
+  return null;
+}
+
+export async function fetchAdminProspects(token?: string): Promise<Prospect[]> {
+  if (isApiEnabled()) {
+    try {
+      return await fetchAll<Prospect>('/api/v1/prospects?size=500', token);
+    } catch { /* fall through */ }
+  }
+  try {
+    const res = await fetch('/api/admin/prospects');
+    if (res.ok) {
+      const body = await res.json();
+      return (body.items || body) as Prospect[];
+    }
+  } catch { /* ignore */ }
+  return [];
+}
+
+export async function fetchAdminGrants(token?: string): Promise<AdminGrant[]> {
+  if (isApiEnabled()) {
+    try {
+      return await fetchAll<AdminGrant>('/api/v1/grants?size=500', token);
+    } catch { /* fall through */ }
+  }
+  try {
+    const res = await fetch('/api/admin/grants');
+    if (res.ok) {
+      const body = await res.json();
+      return (body.items || body) as AdminGrant[];
+    }
+  } catch { /* ignore */ }
+  return [];
+}
+
+export async function fetchApprovals(token?: string): Promise<Approval[]> {
+  if (isApiEnabled()) {
+    try {
+      const res = await apiFetch<{ items: Approval[] } | Approval[]>('/api/v1/approvals?size=500', token);
+      return Array.isArray(res) ? res : res.items;
+    } catch { /* fall through */ }
+  }
+  try {
+    const res = await fetch('/api/admin/approvals');
+    if (res.ok) {
+      const body = await res.json();
+      return (body.items || body) as Approval[];
+    }
+  } catch { /* ignore */ }
+  return [];
+}
+
+export async function submitApprovalAction(
+  id: string,
+  action: 'approve' | 'reject',
+  note?: string,
+  token?: string,
+): Promise<Approval | null> {
+  const payload = { id, action, note };
+
+  if (isApiEnabled()) {
+    try {
+      const tk = token || getRequestToken();
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+      if (tk) headers['Authorization'] = `Bearer ${tk}`;
+
+      const res = await fetch(`${API_URL}/api/v1/approvals/${id}/${action}`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ note }),
+      });
+      if (res.ok) return (await res.json()) as Approval;
+    } catch { /* fall through */ }
+  }
+
+  try {
+    const res = await fetch('/api/admin/approvals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) return (await res.json()) as Approval;
+  } catch { /* ignore */ }
+  return null;
+}
+
 // ── Auth helpers ────────────────────────────────────────────────────────
 
 export interface TokenResponse {

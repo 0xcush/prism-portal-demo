@@ -1,10 +1,10 @@
-import { e as createComponent, m as maybeRenderHead, g as addAttribute, r as renderTemplate, h as createAstro, k as renderComponent, l as renderHead, n as renderSlot, o as renderScript } from './astro/server_C-UfuYaI.mjs';
+import { e as createComponent, m as maybeRenderHead, g as addAttribute, r as renderTemplate, h as createAstro, k as renderComponent, l as renderHead, n as renderSlot, o as renderScript } from './astro/server_Dh-RJMVH.mjs';
 import 'piccolore';
 import 'clsx';
 import { N as NotificationDropdown } from './NotificationDropdown_CnfGf5uF.mjs';
-import { $ as $$ClientRouter } from './ClientRouter_CPlGSO4U.mjs';
+import { $ as $$ClientRouter } from './ClientRouter_XvoqtsBK.mjs';
 /* empty css                           */
-import { l as loadAdminData } from './data-loader_Bff0kFPl.mjs';
+import { l as loadAdminData } from './data-loader_CbTPm3y6.mjs';
 
 const $$Astro$1 = createAstro();
 const $$Sidebar = createComponent(($$result, $$props, $$slots) => {

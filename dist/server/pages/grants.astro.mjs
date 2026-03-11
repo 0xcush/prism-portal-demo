@@ -1,7 +1,7 @@
 /* empty css                                   */
-import { e as createComponent, k as renderComponent, r as renderTemplate, h as createAstro, m as maybeRenderHead } from '../chunks/astro/server_C-UfuYaI.mjs';
+import { e as createComponent, k as renderComponent, r as renderTemplate, h as createAstro, m as maybeRenderHead } from '../chunks/astro/server_Dh-RJMVH.mjs';
 import 'piccolore';
-import { l as loadDonorClient, $ as $$DashboardLayout } from '../chunks/donor-data-loader_BiAwFb3g.mjs';
+import { l as loadDonorClient, $ as $$DashboardLayout } from '../chunks/donor-data-loader_IbvCAMWK.mjs';
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import { useState, useRef, useEffect } from 'react';
 import { a as formatCurrency, f as formatDate } from '../chunks/format_Cc7EDVuw.mjs';

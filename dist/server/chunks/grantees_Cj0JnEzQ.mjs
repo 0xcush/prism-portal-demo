@@ -1,0 +1,1080 @@
+const grantees = [
+  {
+    id: "nspcc",
+    charityName: "NSPCC",
+    name: "NSPCC",
+    charityNumber: "216401",
+    contactName: "Rachel Thornbury",
+    contactPerson: "Rachel Thornbury",
+    contactEmail: "grants@example-nspcc.org",
+    address: "Weston House, 42 Curtain Road, London EC2A 3NH",
+    sector: "Children's Welfare",
+    totalReceived: 34e4,
+    activeGrants: 3
+  },
+  {
+    id: "tate",
+    charityName: "Tate Foundation",
+    name: "Tate Foundation",
+    charityNumber: "1085314",
+    contactName: "James Caldwell",
+    contactPerson: "James Caldwell",
+    contactEmail: "grants@example-tate.org",
+    address: "Millbank, London SW1P 4RG",
+    sector: "Arts & Culture",
+    totalReceived: 18e4,
+    activeGrants: 2
+  },
+  {
+    id: "bhf",
+    charityName: "British Heart Foundation",
+    name: "British Heart Foundation",
+    charityNumber: "225971",
+    contactName: "Dr Sarah Winters",
+    contactPerson: "Dr Sarah Winters",
+    contactEmail: "grants@example-bhf.org",
+    address: "Greater London House, 180 Hampstead Road, London NW1 7AW",
+    sector: "Medical Research",
+    totalReceived: 52e4,
+    activeGrants: 4
+  },
+  {
+    id: "wwf",
+    charityName: "WWF UK",
+    name: "WWF UK",
+    charityNumber: "1081247",
+    contactName: "Oliver Hartley",
+    contactPerson: "Oliver Hartley",
+    contactEmail: "grants@example-wwf.org",
+    address: "The Living Planet Centre, Rufford House, Brewery Road, Woking GU21 4LL",
+    sector: "Environment",
+    totalReceived: 275e3,
+    activeGrants: 2
+  },
+  {
+    id: "shelter",
+    charityName: "Shelter",
+    name: "Shelter",
+    charityNumber: "263710",
+    contactName: "Rebecca Ashmore",
+    contactPerson: "Rebecca Ashmore",
+    contactEmail: "grants@example-shelter.org",
+    address: "88 Old Street, London EC1V 9HU",
+    sector: "Housing & Homelessness",
+    totalReceived: 195e3,
+    activeGrants: 3
+  },
+  {
+    id: "roh",
+    charityName: "Royal Opera House",
+    name: "Royal Opera House",
+    charityNumber: "211775",
+    contactName: "Victoria Fleming",
+    contactPerson: "Victoria Fleming",
+    contactEmail: "grants@example-roh.org",
+    address: "Bow Street, London WC2E 9DD",
+    sector: "Arts & Culture",
+    totalReceived: 12e4,
+    activeGrants: 2
+  },
+  {
+    id: "eton",
+    charityName: "Eton College Foundation",
+    name: "Eton College Foundation",
+    charityNumber: "1139086",
+    contactName: "Philip Hargreaves",
+    contactPerson: "Philip Hargreaves",
+    contactEmail: "grants@example-eton.org",
+    address: "Eton College, Windsor SL4 6DW",
+    sector: "Education",
+    totalReceived: 2e5,
+    activeGrants: 1
+  },
+  {
+    id: "redcross",
+    charityName: "British Red Cross",
+    name: "British Red Cross",
+    charityNumber: "220949",
+    contactName: "Aisha Mahmood",
+    contactPerson: "Aisha Mahmood",
+    contactEmail: "grants@example-redcross.org",
+    address: "44 Moorfields, London EC2Y 9AL",
+    sector: "Humanitarian",
+    totalReceived: 1e5,
+    activeGrants: 1
+  },
+  {
+    id: "felix",
+    charityName: "The Felix Project",
+    name: "The Felix Project",
+    charityNumber: "1168183",
+    contactName: "Sophie Tremblay",
+    contactPerson: "Sophie Tremblay",
+    contactEmail: "grants@example-felix.org",
+    address: "Unit 6, Poplar Business Park, London E14 0BF",
+    sector: "Poverty & Food",
+    totalReceived: 45e3,
+    activeGrants: 1
+  },
+  {
+    id: "mind",
+    charityName: "Mind",
+    name: "Mind",
+    charityNumber: "219830",
+    contactName: "Dr Liam Patterson",
+    contactPerson: "Dr Liam Patterson",
+    contactEmail: "grants@example-mind.org",
+    address: "2 Redman Place, London E20 1JQ",
+    sector: "Mental Health",
+    totalReceived: 28e4,
+    activeGrants: 2
+  },
+  {
+    id: "nlt",
+    charityName: "National Literacy Trust",
+    name: "National Literacy Trust",
+    charityNumber: "1116260",
+    contactName: "Emma Richardson",
+    contactPerson: "Emma Richardson",
+    contactEmail: "grants@example-nlt.org",
+    address: "68 South Lambeth Road, London SW8 1RL",
+    sector: "Education",
+    totalReceived: 85e3,
+    activeGrants: 1
+  },
+  {
+    id: "mcs",
+    charityName: "Marine Conservation Society",
+    name: "Marine Conservation Society",
+    charityNumber: "1004005",
+    contactName: "Dr Hannah Wolfe",
+    contactPerson: "Dr Hannah Wolfe",
+    contactEmail: "grants@example-mcs.org",
+    address: "Overross House, Ross-on-Wye HR9 7QQ",
+    sector: "Environment",
+    totalReceived: 15e4,
+    activeGrants: 1
+  },
+  {
+    id: "woodland",
+    charityName: "Woodland Trust",
+    name: "Woodland Trust",
+    charityNumber: "294344",
+    contactName: "Robert Ellison",
+    contactPerson: "Robert Ellison",
+    contactEmail: "grants@example-woodland.org",
+    address: "Kempton Way, Grantham NG31 6LL",
+    sector: "Environment",
+    totalReceived: 95e3,
+    activeGrants: 1
+  },
+  {
+    id: "cruk",
+    charityName: "Cancer Research UK",
+    name: "Cancer Research UK",
+    charityNumber: "1089464",
+    contactName: "Professor Diane Hughes",
+    contactPerson: "Professor Diane Hughes",
+    contactEmail: "grants@example-cruk.org",
+    address: "2 Redman Place, London E20 1JQ",
+    sector: "Medical Research",
+    totalReceived: 4e5,
+    activeGrants: 1
+  },
+  {
+    id: "nyo",
+    charityName: "National Youth Orchestra",
+    name: "National Youth Orchestra",
+    charityNumber: "263878",
+    contactName: "Margaret Chen",
+    contactPerson: "Margaret Chen",
+    contactEmail: "grants@example-nyo.org",
+    address: "Kings Place, 90 York Way, London N1 9AG",
+    sector: "Arts & Culture",
+    totalReceived: 6e4,
+    activeGrants: 1
+  },
+  {
+    id: "vam",
+    charityName: "Victoria & Albert Museum",
+    name: "Victoria & Albert Museum",
+    charityNumber: "312058",
+    contactName: "Dr Nicholas Harwell",
+    contactPerson: "Dr Nicholas Harwell",
+    contactEmail: "grants@example-vam.org",
+    address: "Cromwell Road, London SW7 2RL",
+    sector: "Arts & Culture",
+    totalReceived: 0,
+    activeGrants: 0
+  }
+];
+const grants = [
+  // ── NSPCC (3 grants) ────────────────────────────────────────────────────
+  {
+    id: "gr-nspcc-001",
+    grantName: "Childline Digital Expansion",
+    charityId: "nspcc",
+    amount: 15e4,
+    stage: "Paid",
+    status: "Paid",
+    dateRequested: "2025-06-12",
+    dateApproved: "2025-07-04",
+    datePaid: "2025-07-22",
+    donorName: "Richard M.",
+    donorFund: "Cavendish-Hale Foundation Fund",
+    issueArea: "Children & Young People",
+    notes: "Year-two funding for online counselling platform rollout.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-06-14", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-06-14", notes: "FY2024-25" },
+      { name: "Safeguarding Policy", status: "Verified", submittedDate: "2025-06-16", notes: "" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-06-15", notes: "" }
+    ],
+    paymentRef: "PRISM-2025-0722-NSPCC-1",
+    reportDueDate: "2026-01-22",
+    reportStatus: "Submitted"
+  },
+  {
+    id: "gr-nspcc-002",
+    grantName: "Schools Safeguarding Programme",
+    charityId: "nspcc",
+    amount: 85e3,
+    stage: "Approved",
+    status: "Approved",
+    dateRequested: "2025-11-03",
+    dateApproved: "2025-12-01",
+    datePaid: null,
+    donorName: "Catherine W.",
+    donorFund: "Westminster Giving Fund",
+    issueArea: "Children & Young People",
+    notes: "Training programme for 200 primary schools across the Midlands.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-11-05", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-11-05", notes: "FY2024-25" },
+      { name: "Programme Budget & Timeline", status: "Verified", submittedDate: "2025-11-10", notes: "" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-11-06", notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: "2026-06-01",
+    reportStatus: "Not Due"
+  },
+  {
+    id: "gr-nspcc-003",
+    grantName: "Early Years Intervention Research",
+    charityId: "nspcc",
+    amount: 105e3,
+    stage: "In Review",
+    status: "In Review",
+    dateRequested: "2026-01-18",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "Amara K.",
+    donorFund: "Kensington Collective Fund",
+    issueArea: "Children & Young People",
+    notes: "Longitudinal study in partnership with University of Bristol.",
+    ddStatus: "In Progress",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2026-01-20", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2026-01-20", notes: "FY2024-25" },
+      { name: "Research Ethics Approval", status: "Submitted", submittedDate: "2026-01-25", notes: "Under review by grants team" },
+      { name: "Impact Measurement Framework", status: "Required", submittedDate: null, notes: "Requested 28 Jan" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  // ── Tate Foundation (2 grants) ──────────────────────────────────────────
+  {
+    id: "gr-tate-001",
+    grantName: "Turner Collection Restoration",
+    charityId: "tate",
+    amount: 12e4,
+    stage: "Paid",
+    status: "Paid",
+    dateRequested: "2025-04-20",
+    dateApproved: "2025-05-15",
+    datePaid: "2025-06-02",
+    donorName: "Edward L.",
+    donorFund: "Ashworth Arts & Heritage Fund",
+    issueArea: "Arts & Heritage",
+    notes: "Conservation of 14 watercolours from the Turner Bequest.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-04-22", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-04-22", notes: "FY2024-25" },
+      { name: "Project Specification", status: "Verified", submittedDate: "2025-04-25", notes: "" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-04-23", notes: "" }
+    ],
+    paymentRef: "PRISM-2025-0602-TATE-1",
+    reportDueDate: "2025-12-02",
+    reportStatus: "Submitted"
+  },
+  {
+    id: "gr-tate-002",
+    grantName: "Community Engagement Programme",
+    charityId: "tate",
+    amount: 6e4,
+    stage: "Requested",
+    status: "Requested",
+    dateRequested: "2026-02-10",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "Fiona D.",
+    donorFund: "Kensington Collective Fund",
+    issueArea: "Arts & Heritage",
+    notes: "Free workshops for under-served communities in Liverpool and St Ives.",
+    ddStatus: "Pending",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Submitted", submittedDate: "2026-02-12", notes: "" },
+      { name: "Latest Annual Accounts", status: "Required", submittedDate: null, notes: "" },
+      { name: "Programme Proposal", status: "Required", submittedDate: null, notes: "" },
+      { name: "Bank Verification Letter", status: "Required", submittedDate: null, notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  // ── British Heart Foundation (4 grants) ─────────────────────────────────
+  {
+    id: "gr-bhf-001",
+    grantName: "Cardiovascular Genomics Study",
+    charityId: "bhf",
+    amount: 15e4,
+    stage: "Paid",
+    status: "Paid",
+    dateRequested: "2025-03-10",
+    dateApproved: "2025-04-08",
+    datePaid: "2025-04-28",
+    donorName: "Jonathan P.",
+    donorFund: "Westminster Giving Fund",
+    issueArea: "Medical Research",
+    notes: "Genome-wide association study at Imperial College London.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-03-12", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-03-12", notes: "FY2024-25" },
+      { name: "Research Ethics Approval", status: "Verified", submittedDate: "2025-03-15", notes: "Imperial ethics ref #3291" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-03-13", notes: "" }
+    ],
+    paymentRef: "PRISM-2025-0428-BHF-1",
+    reportDueDate: "2025-10-28",
+    reportStatus: "Submitted"
+  },
+  {
+    id: "gr-bhf-002",
+    grantName: "Defibrillator Access Initiative",
+    charityId: "bhf",
+    amount: 95e3,
+    stage: "Paid",
+    status: "Paid",
+    dateRequested: "2025-08-22",
+    dateApproved: "2025-09-15",
+    datePaid: "2025-10-01",
+    donorName: "Sarah H.",
+    donorFund: "Ashford Legacy Fund",
+    issueArea: "Community Health",
+    notes: "450 public-access defibrillators installed across rural Wales.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-08-24", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-08-24", notes: "FY2024-25" },
+      { name: "Equipment Procurement Plan", status: "Verified", submittedDate: "2025-08-28", notes: "" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-08-25", notes: "" }
+    ],
+    paymentRef: "PRISM-2025-1001-BHF-3",
+    reportDueDate: "2026-04-01",
+    reportStatus: "Due"
+  },
+  {
+    id: "gr-bhf-003",
+    grantName: "Cardiac Rehabilitation Pilot",
+    charityId: "bhf",
+    amount: 125e3,
+    stage: "Approved",
+    status: "Approved",
+    dateRequested: "2025-12-05",
+    dateApproved: "2026-01-10",
+    datePaid: null,
+    donorName: "Marcus T.",
+    donorFund: "Thornbury Impact Fund",
+    issueArea: "Medical Research",
+    notes: "Digital rehab pathway trial across 12 NHS trusts.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-12-07", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-12-07", notes: "FY2024-25" },
+      { name: "NHS Trust Partnership Letters", status: "Verified", submittedDate: "2025-12-12", notes: "12 letters received" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-12-08", notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  {
+    id: "gr-bhf-004",
+    grantName: "Heart Failure Early Detection",
+    charityId: "bhf",
+    amount: 15e4,
+    stage: "In Review",
+    status: "In Review",
+    dateRequested: "2026-02-14",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "Helen R.",
+    donorFund: "Beaumont Charitable Fund",
+    issueArea: "Medical Research",
+    notes: "AI-assisted screening tool development with Kings College London.",
+    ddStatus: "In Progress",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2026-02-16", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2026-02-16", notes: "FY2024-25" },
+      { name: "Research Ethics Approval", status: "Submitted", submittedDate: "2026-02-20", notes: "KCL ethics board — awaiting response" },
+      { name: "Data Protection Impact Assessment", status: "Required", submittedDate: null, notes: "AI/ML project — DPIA mandatory" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  // ── WWF UK (2 grants) ──────────────────────────────────────────────────
+  {
+    id: "gr-wwf-001",
+    grantName: "UK Peatland Restoration",
+    charityId: "wwf",
+    amount: 14e4,
+    stage: "Paid",
+    status: "Paid",
+    dateRequested: "2025-05-14",
+    dateApproved: "2025-06-12",
+    datePaid: "2025-07-01",
+    donorName: "Alistair G.",
+    donorFund: "Cavendish-Hale Foundation Fund",
+    issueArea: "Conservation",
+    notes: "Restoring 800 hectares of degraded peatland in the Scottish Highlands.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-05-16", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-05-16", notes: "FY2024-25" },
+      { name: "Conservation Impact Report", status: "Verified", submittedDate: "2025-05-20", notes: "" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-05-17", notes: "" }
+    ],
+    paymentRef: "PRISM-2025-0701-WWF-1",
+    reportDueDate: "2026-01-01",
+    reportStatus: "Overdue"
+  },
+  {
+    id: "gr-wwf-002",
+    grantName: "Ocean Plastics Education Campaign",
+    charityId: "wwf",
+    amount: 135e3,
+    stage: "In Review",
+    status: "In Review",
+    dateRequested: "2026-01-28",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "Priya N.",
+    donorFund: "Penrose Wealth CF",
+    issueArea: "Environment",
+    notes: "National schools programme targeting 50,000 pupils in Year 7-9.",
+    ddStatus: "In Progress",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2026-01-30", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2026-01-30", notes: "FY2024-25" },
+      { name: "Programme Budget", status: "Submitted", submittedDate: "2026-02-03", notes: "Under review" },
+      { name: "Safeguarding Policy (Schools)", status: "Required", submittedDate: null, notes: "DfE-compliant policy needed" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  // ── Shelter (3 grants) ──────────────────────────────────────────────────
+  {
+    id: "gr-shelter-001",
+    grantName: "Emergency Helpline Expansion",
+    charityId: "shelter",
+    amount: 75e3,
+    stage: "Paid",
+    status: "Paid",
+    dateRequested: "2025-07-01",
+    dateApproved: "2025-07-25",
+    datePaid: "2025-08-12",
+    donorName: "David B.",
+    donorFund: "Thornbury Impact Fund",
+    issueArea: "Housing & Homelessness",
+    notes: "Extended helpline hours to 24/7 coverage for winter months.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-07-03", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-07-03", notes: "FY2024-25" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-07-04", notes: "" }
+    ],
+    paymentRef: "PRISM-2025-0812-SHELT-1",
+    reportDueDate: "2026-02-12",
+    reportStatus: "Submitted"
+  },
+  {
+    id: "gr-shelter-002",
+    grantName: "Housing Legal Advice Service",
+    charityId: "shelter",
+    amount: 6e4,
+    stage: "Approved",
+    status: "Approved",
+    dateRequested: "2025-11-18",
+    dateApproved: "2025-12-16",
+    datePaid: null,
+    donorName: "Natasha C.",
+    donorFund: "Ashford Legacy Fund",
+    issueArea: "Housing & Homelessness",
+    notes: "Free legal casework for tenants facing Section 21 evictions.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-11-20", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-11-20", notes: "FY2024-25" },
+      { name: "Programme Outcomes Framework", status: "Verified", submittedDate: "2025-11-25", notes: "" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-11-21", notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  {
+    id: "gr-shelter-003",
+    grantName: "Rough Sleeper Outreach — Manchester",
+    charityId: "shelter",
+    amount: 6e4,
+    stage: "Requested",
+    status: "Requested",
+    dateRequested: "2026-02-25",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "George F.",
+    donorFund: "Beaumont Charitable Fund",
+    issueArea: "Housing & Homelessness",
+    notes: "Street outreach team and temporary accommodation placements.",
+    ddStatus: "Not Started",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Required", submittedDate: null, notes: "" },
+      { name: "Latest Annual Accounts", status: "Required", submittedDate: null, notes: "" },
+      { name: "Project Proposal", status: "Required", submittedDate: null, notes: "" },
+      { name: "Bank Verification Letter", status: "Required", submittedDate: null, notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  // ── Royal Opera House (2 grants) ──────────────────────────────────────────
+  {
+    id: "gr-roh-001",
+    grantName: "Performance Season Support",
+    charityId: "roh",
+    amount: 12e4,
+    stage: "Paid",
+    status: "Paid",
+    dateRequested: "2025-04-10",
+    dateApproved: "2025-05-08",
+    datePaid: "2025-05-28",
+    donorName: "Sophia A.",
+    donorFund: "Ashworth Arts & Heritage Fund",
+    issueArea: "Arts & Culture",
+    notes: "Support for 2025-26 season including three new productions.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-04-12", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-04-12", notes: "FY2024-25" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-04-14", notes: "" }
+    ],
+    paymentRef: "PRISM-2025-0528-ROH-1",
+    reportDueDate: "2025-11-28",
+    reportStatus: "Submitted"
+  },
+  {
+    id: "gr-roh-002",
+    grantName: "Schools Outreach Programme",
+    charityId: "roh",
+    amount: 55e3,
+    stage: "In Review",
+    status: "In Review",
+    dateRequested: "2026-01-20",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "Fiona D.",
+    donorFund: "Kensington Collective Fund",
+    issueArea: "Arts & Culture",
+    notes: "Opera workshops for state schools in Tower Hamlets and Hackney.",
+    ddStatus: "In Progress",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2026-01-22", notes: "" },
+      { name: "Programme Budget", status: "Submitted", submittedDate: "2026-01-25", notes: "" },
+      { name: "Safeguarding Policy", status: "Required", submittedDate: null, notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  // ── Eton College Foundation (1 grant) ─────────────────────────────────────
+  {
+    id: "gr-eton-001",
+    grantName: "Scholarships Fund",
+    charityId: "eton",
+    amount: 2e5,
+    stage: "Approved",
+    status: "Approved",
+    dateRequested: "2025-09-15",
+    dateApproved: "2025-10-20",
+    datePaid: null,
+    donorName: "Diana E.",
+    donorFund: "Ellsworth Research Fund",
+    issueArea: "Education",
+    notes: "Bursaries for 10 students from low-income backgrounds.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-09-17", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-09-17", notes: "FY2024-25" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-09-18", notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: "2026-04-20",
+    reportStatus: "Due"
+  },
+  // ── British Red Cross (1 grant) ───────────────────────────────────────────
+  {
+    id: "gr-redcross-001",
+    grantName: "Emergency Relief Fund",
+    charityId: "redcross",
+    amount: 1e5,
+    stage: "Paid",
+    status: "Paid",
+    dateRequested: "2025-08-01",
+    dateApproved: "2025-08-20",
+    datePaid: "2025-09-05",
+    donorName: "Catherine B.",
+    donorFund: "Beaumont Charitable Fund",
+    issueArea: "Humanitarian",
+    notes: "Domestic flood relief and temporary shelter provision.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-08-03", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-08-03", notes: "FY2024-25" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-08-04", notes: "" }
+    ],
+    paymentRef: "PRISM-2025-0905-RC-1",
+    reportDueDate: "2026-03-05",
+    reportStatus: "Overdue"
+  },
+  // ── The Felix Project (1 grant) ───────────────────────────────────────────
+  {
+    id: "gr-felix-001",
+    grantName: "Community Kitchen Expansion",
+    charityId: "felix",
+    amount: 45e3,
+    stage: "Requested",
+    status: "Requested",
+    dateRequested: "2026-03-01",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "Fund Committee",
+    donorFund: "Thornbury Impact Fund",
+    issueArea: "Poverty & Food",
+    notes: "New kitchen facility to serve 500 additional meals per day.",
+    ddStatus: "Pending",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Submitted", submittedDate: "2026-03-03", notes: "" },
+      { name: "Latest Annual Accounts", status: "Required", submittedDate: null, notes: "" },
+      { name: "Bank Verification Letter", status: "Required", submittedDate: null, notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  // ── Mind (2 grants) ───────────────────────────────────────────────────────
+  {
+    id: "gr-mind-001",
+    grantName: "Mental Health Programme",
+    charityId: "mind",
+    amount: 18e4,
+    stage: "Paid",
+    status: "Paid",
+    dateRequested: "2025-05-10",
+    dateApproved: "2025-06-15",
+    datePaid: "2025-07-08",
+    donorName: "Trust Manager",
+    donorFund: "Ashford Legacy Fund",
+    issueArea: "Mental Health",
+    notes: "Workplace mental health training for 500 organisations.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-05-12", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-05-12", notes: "FY2024-25" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-05-13", notes: "" }
+    ],
+    paymentRef: "PRISM-2025-0708-MIND-1",
+    reportDueDate: "2026-01-08",
+    reportStatus: "Submitted"
+  },
+  {
+    id: "gr-mind-002",
+    grantName: "Crisis Support Line Extension",
+    charityId: "mind",
+    amount: 1e5,
+    stage: "In Review",
+    status: "In Review",
+    dateRequested: "2026-02-10",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "Helen R.",
+    donorFund: "Beaumont Charitable Fund",
+    issueArea: "Mental Health",
+    notes: "Extending crisis helpline hours to 24/7 with trained counsellors.",
+    ddStatus: "In Progress",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2026-02-12", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2026-02-12", notes: "FY2024-25" },
+      { name: "Programme Budget", status: "Submitted", submittedDate: "2026-02-15", notes: "Under review" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  // ── National Literacy Trust (1 grant) ─────────────────────────────────────
+  {
+    id: "gr-nlt-001",
+    grantName: "Literacy Programme",
+    charityId: "nlt",
+    amount: 85e3,
+    stage: "Requested",
+    status: "Requested",
+    dateRequested: "2026-03-05",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "Diana E.",
+    donorFund: "Ellsworth Research Fund",
+    issueArea: "Education",
+    notes: "Reading mentorship programme for 200 primary schools.",
+    ddStatus: "Not Started",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Required", submittedDate: null, notes: "" },
+      { name: "Latest Annual Accounts", status: "Required", submittedDate: null, notes: "" },
+      { name: "Bank Verification Letter", status: "Required", submittedDate: null, notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  // ── Marine Conservation Society (1 grant) ─────────────────────────────────
+  {
+    id: "gr-mcs-001",
+    grantName: "Ocean Conservation Programme",
+    charityId: "mcs",
+    amount: 15e4,
+    stage: "Approved",
+    status: "Approved",
+    dateRequested: "2025-10-15",
+    dateApproved: "2025-11-20",
+    datePaid: null,
+    donorName: "Fund Committee",
+    donorFund: "Penrose Wealth CF",
+    issueArea: "Environment",
+    notes: "Coastal habitat restoration across 12 sites in Cornwall and Devon.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-10-17", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-10-17", notes: "FY2024-25" },
+      { name: "Environmental Impact Assessment", status: "Verified", submittedDate: "2025-10-22", notes: "" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-10-18", notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: "2026-05-20",
+    reportStatus: "Not Due"
+  },
+  // ── Woodland Trust (1 grant) ──────────────────────────────────────────────
+  {
+    id: "gr-woodland-001",
+    grantName: "Reforestation Project",
+    charityId: "woodland",
+    amount: 95e3,
+    stage: "Requested",
+    status: "Requested",
+    dateRequested: "2026-03-03",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "Catherine B.",
+    donorFund: "Beaumont Charitable Fund",
+    issueArea: "Environment",
+    notes: "Planting 50,000 native broadleaf trees across the Peak District.",
+    ddStatus: "Not Started",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Required", submittedDate: null, notes: "" },
+      { name: "Latest Annual Accounts", status: "Required", submittedDate: null, notes: "" },
+      { name: "Bank Verification Letter", status: "Required", submittedDate: null, notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  // ── Cancer Research UK (1 grant) ──────────────────────────────────────────
+  {
+    id: "gr-cruk-001",
+    grantName: "Cancer Research Grant",
+    charityId: "cruk",
+    amount: 4e5,
+    stage: "Requested",
+    status: "Requested",
+    dateRequested: "2026-03-08",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "Trust Committee",
+    donorFund: "Kensington Collective Fund",
+    issueArea: "Medical Research",
+    notes: "Immunotherapy research programme with UCL Cancer Institute.",
+    ddStatus: "Not Started",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Required", submittedDate: null, notes: "" },
+      { name: "Latest Annual Accounts", status: "Required", submittedDate: null, notes: "" },
+      { name: "Research Ethics Approval", status: "Required", submittedDate: null, notes: "" },
+      { name: "Bank Verification Letter", status: "Required", submittedDate: null, notes: "" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  },
+  // ── National Youth Orchestra (1 grant) ────────────────────────────────────
+  {
+    id: "gr-nyo-001",
+    grantName: "Youth Orchestra Support",
+    charityId: "nyo",
+    amount: 6e4,
+    stage: "Paid",
+    status: "Paid",
+    dateRequested: "2025-03-15",
+    dateApproved: "2025-04-10",
+    datePaid: "2025-04-30",
+    donorName: "Sophia A.",
+    donorFund: "Ashworth Arts & Heritage Fund",
+    issueArea: "Arts & Culture",
+    notes: "Summer tour support and instrument acquisition for 20 young musicians.",
+    ddStatus: "Complete",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2025-03-17", notes: "" },
+      { name: "Latest Annual Accounts", status: "Verified", submittedDate: "2025-03-17", notes: "FY2024-25" },
+      { name: "Bank Verification Letter", status: "Verified", submittedDate: "2025-03-18", notes: "" }
+    ],
+    paymentRef: "PRISM-2025-0430-NYO-1",
+    reportDueDate: "2025-10-30",
+    reportStatus: "Submitted"
+  },
+  // ── Victoria & Albert Museum (1 grant — declined) ─────────────────────────
+  {
+    id: "gr-vam-001",
+    grantName: "Museum Acquisition Fund",
+    charityId: "vam",
+    amount: 75e3,
+    stage: "Declined",
+    status: "Declined",
+    dateRequested: "2026-01-15",
+    dateApproved: null,
+    datePaid: null,
+    donorName: "Sophia A.",
+    donorFund: "Ashworth Arts & Heritage Fund",
+    issueArea: "Arts & Culture",
+    notes: "Application did not meet DD requirements within timeframe.",
+    ddStatus: "Failed",
+    requiredDocuments: [
+      { name: "Charity Commission Registration", status: "Verified", submittedDate: "2026-01-17", notes: "" },
+      { name: "Latest Annual Accounts", status: "Required", submittedDate: null, notes: "Not provided" }
+    ],
+    paymentRef: null,
+    reportDueDate: null,
+    reportStatus: "Not Due"
+  }
+];
+const ddDocuments = [
+  // ── NSPCC (10 documents) ────────────────────────────────────────────────
+  { id: "dd-nspcc-01", charityId: "nspcc", documentName: "Governing Document (Royal Charter)", type: "Governance", status: "Received", dateUploaded: "2025-06-10", expiryDate: "" },
+  { id: "dd-nspcc-02", charityId: "nspcc", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-06-10", expiryDate: "2026-09-30" },
+  { id: "dd-nspcc-03", charityId: "nspcc", documentName: "Annual Report 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-06-10", expiryDate: "2026-09-30" },
+  { id: "dd-nspcc-04", charityId: "nspcc", documentName: "Safeguarding Policy", type: "Safeguarding", status: "Received", dateUploaded: "2025-06-12", expiryDate: "2026-06-12" },
+  { id: "dd-nspcc-05", charityId: "nspcc", documentName: "DBS Check Confirmation — Contact", type: "Safeguarding", status: "Received", dateUploaded: "2025-06-14", expiryDate: "2028-06-14" },
+  { id: "dd-nspcc-06", charityId: "nspcc", documentName: "Bank Statement (Barclays)", type: "Financial", status: "Received", dateUploaded: "2025-06-11", expiryDate: "2026-06-11" },
+  { id: "dd-nspcc-07", charityId: "nspcc", documentName: "Trustees List", type: "Governance", status: "Received", dateUploaded: "2025-06-10", expiryDate: "2026-09-30" },
+  { id: "dd-nspcc-08", charityId: "nspcc", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2025-06-10", expiryDate: "" },
+  { id: "dd-nspcc-09", charityId: "nspcc", documentName: "Anti-Money Laundering Declaration", type: "Regulatory", status: "Received", dateUploaded: "2025-06-13", expiryDate: "2026-06-13" },
+  { id: "dd-nspcc-10", charityId: "nspcc", documentName: "Contact ID Verification", type: "Identity", status: "Received", dateUploaded: "2025-06-14", expiryDate: "2028-06-14" },
+  // ── Tate Foundation (9 documents) ───────────────────────────────────────
+  { id: "dd-tate-01", charityId: "tate", documentName: "Articles of Association", type: "Governance", status: "Received", dateUploaded: "2025-04-18", expiryDate: "" },
+  { id: "dd-tate-02", charityId: "tate", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-04-18", expiryDate: "2026-09-30" },
+  { id: "dd-tate-03", charityId: "tate", documentName: "Annual Report 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-04-18", expiryDate: "2026-09-30" },
+  { id: "dd-tate-04", charityId: "tate", documentName: "Safeguarding Policy", type: "Safeguarding", status: "Received", dateUploaded: "2025-04-20", expiryDate: "2026-04-20" },
+  { id: "dd-tate-05", charityId: "tate", documentName: "Bank Statement (HSBC)", type: "Financial", status: "Pending", dateUploaded: "", expiryDate: "" },
+  { id: "dd-tate-06", charityId: "tate", documentName: "Trustees List", type: "Governance", status: "Received", dateUploaded: "2025-04-19", expiryDate: "2026-09-30" },
+  { id: "dd-tate-07", charityId: "tate", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2025-04-18", expiryDate: "" },
+  { id: "dd-tate-08", charityId: "tate", documentName: "Contact ID Verification", type: "Identity", status: "Received", dateUploaded: "2025-04-22", expiryDate: "2028-04-22" },
+  { id: "dd-tate-09", charityId: "tate", documentName: "Anti-Money Laundering Declaration", type: "Regulatory", status: "Pending", dateUploaded: "", expiryDate: "" },
+  // ── British Heart Foundation (12 documents) ─────────────────────────────
+  { id: "dd-bhf-01", charityId: "bhf", documentName: "Memorandum & Articles of Association", type: "Governance", status: "Received", dateUploaded: "2025-03-08", expiryDate: "" },
+  { id: "dd-bhf-02", charityId: "bhf", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-03-08", expiryDate: "2026-09-30" },
+  { id: "dd-bhf-03", charityId: "bhf", documentName: "Annual Report 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-03-08", expiryDate: "2026-09-30" },
+  { id: "dd-bhf-04", charityId: "bhf", documentName: "Audited Financial Statements 2023-24", type: "Financial", status: "Received", dateUploaded: "2025-03-08", expiryDate: "2026-03-08" },
+  { id: "dd-bhf-05", charityId: "bhf", documentName: "Safeguarding Policy", type: "Safeguarding", status: "Received", dateUploaded: "2025-03-10", expiryDate: "2026-03-10" },
+  { id: "dd-bhf-06", charityId: "bhf", documentName: "Whistleblowing Policy", type: "Safeguarding", status: "Received", dateUploaded: "2025-03-10", expiryDate: "2026-03-10" },
+  { id: "dd-bhf-07", charityId: "bhf", documentName: "Bank Statement (NatWest)", type: "Financial", status: "Received", dateUploaded: "2025-03-09", expiryDate: "2026-03-09" },
+  { id: "dd-bhf-08", charityId: "bhf", documentName: "Trustees List", type: "Governance", status: "Received", dateUploaded: "2025-03-08", expiryDate: "2026-09-30" },
+  { id: "dd-bhf-09", charityId: "bhf", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2025-03-08", expiryDate: "" },
+  { id: "dd-bhf-10", charityId: "bhf", documentName: "Research Ethics Approval (UCL)", type: "Regulatory", status: "Received", dateUploaded: "2025-03-12", expiryDate: "2026-12-31" },
+  { id: "dd-bhf-11", charityId: "bhf", documentName: "Anti-Money Laundering Declaration", type: "Regulatory", status: "Received", dateUploaded: "2025-03-11", expiryDate: "2026-03-11" },
+  { id: "dd-bhf-12", charityId: "bhf", documentName: "Contact ID Verification", type: "Identity", status: "Expired", dateUploaded: "2022-03-15", expiryDate: "2025-03-15" },
+  // ── WWF UK (10 documents) ──────────────────────────────────────────────
+  { id: "dd-wwf-01", charityId: "wwf", documentName: "Articles of Association", type: "Governance", status: "Received", dateUploaded: "2025-05-12", expiryDate: "" },
+  { id: "dd-wwf-02", charityId: "wwf", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-05-12", expiryDate: "2026-09-30" },
+  { id: "dd-wwf-03", charityId: "wwf", documentName: "Annual Report 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-05-12", expiryDate: "2026-09-30" },
+  { id: "dd-wwf-04", charityId: "wwf", documentName: "Safeguarding Policy", type: "Safeguarding", status: "Received", dateUploaded: "2025-05-14", expiryDate: "2026-05-14" },
+  { id: "dd-wwf-05", charityId: "wwf", documentName: "Bank Statement (Lloyds)", type: "Financial", status: "Received", dateUploaded: "2025-05-13", expiryDate: "2026-05-13" },
+  { id: "dd-wwf-06", charityId: "wwf", documentName: "Trustees List", type: "Governance", status: "Received", dateUploaded: "2025-05-12", expiryDate: "2026-09-30" },
+  { id: "dd-wwf-07", charityId: "wwf", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2025-05-12", expiryDate: "" },
+  { id: "dd-wwf-08", charityId: "wwf", documentName: "Environmental Impact Assessment", type: "Regulatory", status: "Received", dateUploaded: "2025-05-15", expiryDate: "2026-12-31" },
+  { id: "dd-wwf-09", charityId: "wwf", documentName: "Anti-Money Laundering Declaration", type: "Regulatory", status: "Received", dateUploaded: "2025-05-14", expiryDate: "2026-05-14" },
+  { id: "dd-wwf-10", charityId: "wwf", documentName: "Contact ID Verification", type: "Identity", status: "Received", dateUploaded: "2025-05-16", expiryDate: "2028-05-16" },
+  // ── Shelter (8 documents) ──────────────────────────────────────────────
+  { id: "dd-shelter-01", charityId: "shelter", documentName: "Memorandum & Articles of Association", type: "Governance", status: "Received", dateUploaded: "2025-06-28", expiryDate: "" },
+  { id: "dd-shelter-02", charityId: "shelter", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-06-28", expiryDate: "2026-09-30" },
+  { id: "dd-shelter-03", charityId: "shelter", documentName: "Annual Report 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-06-28", expiryDate: "2026-09-30" },
+  { id: "dd-shelter-04", charityId: "shelter", documentName: "Safeguarding Policy", type: "Safeguarding", status: "Expired", dateUploaded: "2024-07-01", expiryDate: "2025-07-01" },
+  { id: "dd-shelter-05", charityId: "shelter", documentName: "Bank Statement (Nationwide)", type: "Financial", status: "Received", dateUploaded: "2025-06-29", expiryDate: "2026-06-29" },
+  { id: "dd-shelter-06", charityId: "shelter", documentName: "Trustees List", type: "Governance", status: "Received", dateUploaded: "2025-06-28", expiryDate: "2026-09-30" },
+  { id: "dd-shelter-07", charityId: "shelter", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2025-06-28", expiryDate: "" },
+  { id: "dd-shelter-08", charityId: "shelter", documentName: "Contact ID Verification", type: "Identity", status: "Pending", dateUploaded: "", expiryDate: "" },
+  // ── Royal Opera House ─────────────────────────────────────────────────────
+  { id: "dd-roh-01", charityId: "roh", documentName: "Articles of Association", type: "Governance", status: "Received", dateUploaded: "2025-04-08", expiryDate: "" },
+  { id: "dd-roh-02", charityId: "roh", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-04-08", expiryDate: "2026-09-30" },
+  { id: "dd-roh-03", charityId: "roh", documentName: "Safeguarding Policy", type: "Safeguarding", status: "Received", dateUploaded: "2025-04-10", expiryDate: "2026-04-10" },
+  { id: "dd-roh-04", charityId: "roh", documentName: "Bank Statement (Coutts)", type: "Financial", status: "Received", dateUploaded: "2025-04-09", expiryDate: "2026-04-09" },
+  { id: "dd-roh-05", charityId: "roh", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2025-04-08", expiryDate: "" },
+  { id: "dd-roh-06", charityId: "roh", documentName: "Contact ID Verification", type: "Identity", status: "Received", dateUploaded: "2025-04-11", expiryDate: "2028-04-11" },
+  // ── Eton College Foundation ───────────────────────────────────────────────
+  { id: "dd-eton-01", charityId: "eton", documentName: "Trust Deed", type: "Governance", status: "Received", dateUploaded: "2025-09-14", expiryDate: "" },
+  { id: "dd-eton-02", charityId: "eton", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-09-14", expiryDate: "2026-09-30" },
+  { id: "dd-eton-03", charityId: "eton", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2025-09-14", expiryDate: "" },
+  { id: "dd-eton-04", charityId: "eton", documentName: "Bank Statement (HSBC)", type: "Financial", status: "Received", dateUploaded: "2025-09-15", expiryDate: "2026-09-15" },
+  { id: "dd-eton-05", charityId: "eton", documentName: "Contact ID Verification", type: "Identity", status: "Received", dateUploaded: "2025-09-16", expiryDate: "2028-09-16" },
+  // ── British Red Cross ─────────────────────────────────────────────────────
+  { id: "dd-redcross-01", charityId: "redcross", documentName: "Royal Charter", type: "Governance", status: "Received", dateUploaded: "2025-07-30", expiryDate: "" },
+  { id: "dd-redcross-02", charityId: "redcross", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-07-30", expiryDate: "2026-09-30" },
+  { id: "dd-redcross-03", charityId: "redcross", documentName: "Safeguarding Policy", type: "Safeguarding", status: "Received", dateUploaded: "2025-08-01", expiryDate: "2026-08-01" },
+  { id: "dd-redcross-04", charityId: "redcross", documentName: "Bank Statement (Barclays)", type: "Financial", status: "Received", dateUploaded: "2025-07-31", expiryDate: "2026-07-31" },
+  { id: "dd-redcross-05", charityId: "redcross", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2025-07-30", expiryDate: "" },
+  { id: "dd-redcross-06", charityId: "redcross", documentName: "Contact ID Verification", type: "Identity", status: "Received", dateUploaded: "2025-08-02", expiryDate: "2028-08-02" },
+  // ── The Felix Project ─────────────────────────────────────────────────────
+  { id: "dd-felix-01", charityId: "felix", documentName: "Articles of Association", type: "Governance", status: "Received", dateUploaded: "2026-03-02", expiryDate: "" },
+  { id: "dd-felix-02", charityId: "felix", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Pending", dateUploaded: "", expiryDate: "" },
+  { id: "dd-felix-03", charityId: "felix", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2026-03-02", expiryDate: "" },
+  { id: "dd-felix-04", charityId: "felix", documentName: "Bank Statement", type: "Financial", status: "Pending", dateUploaded: "", expiryDate: "" },
+  // ── Mind ──────────────────────────────────────────────────────────────────
+  { id: "dd-mind-01", charityId: "mind", documentName: "Memorandum & Articles of Association", type: "Governance", status: "Received", dateUploaded: "2025-05-08", expiryDate: "" },
+  { id: "dd-mind-02", charityId: "mind", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-05-08", expiryDate: "2026-09-30" },
+  { id: "dd-mind-03", charityId: "mind", documentName: "Safeguarding Policy", type: "Safeguarding", status: "Received", dateUploaded: "2025-05-10", expiryDate: "2026-05-10" },
+  { id: "dd-mind-04", charityId: "mind", documentName: "Bank Statement (Lloyds)", type: "Financial", status: "Received", dateUploaded: "2025-05-09", expiryDate: "2026-05-09" },
+  { id: "dd-mind-05", charityId: "mind", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2025-05-08", expiryDate: "" },
+  { id: "dd-mind-06", charityId: "mind", documentName: "Contact ID Verification", type: "Identity", status: "Received", dateUploaded: "2025-05-11", expiryDate: "2028-05-11" },
+  // ── National Literacy Trust ───────────────────────────────────────────────
+  { id: "dd-nlt-01", charityId: "nlt", documentName: "Articles of Association", type: "Governance", status: "Pending", dateUploaded: "", expiryDate: "" },
+  { id: "dd-nlt-02", charityId: "nlt", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Pending", dateUploaded: "", expiryDate: "" },
+  { id: "dd-nlt-03", charityId: "nlt", documentName: "Charity Commission Registration", type: "Regulatory", status: "Pending", dateUploaded: "", expiryDate: "" },
+  // ── Marine Conservation Society ───────────────────────────────────────────
+  { id: "dd-mcs-01", charityId: "mcs", documentName: "Articles of Association", type: "Governance", status: "Received", dateUploaded: "2025-10-14", expiryDate: "" },
+  { id: "dd-mcs-02", charityId: "mcs", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-10-14", expiryDate: "2026-09-30" },
+  { id: "dd-mcs-03", charityId: "mcs", documentName: "Safeguarding Policy", type: "Safeguarding", status: "Received", dateUploaded: "2025-10-16", expiryDate: "2026-10-16" },
+  { id: "dd-mcs-04", charityId: "mcs", documentName: "Bank Statement (NatWest)", type: "Financial", status: "Received", dateUploaded: "2025-10-15", expiryDate: "2026-10-15" },
+  { id: "dd-mcs-05", charityId: "mcs", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2025-10-14", expiryDate: "" },
+  { id: "dd-mcs-06", charityId: "mcs", documentName: "Environmental Impact Assessment", type: "Regulatory", status: "Received", dateUploaded: "2025-10-18", expiryDate: "2026-12-31" },
+  { id: "dd-mcs-07", charityId: "mcs", documentName: "Contact ID Verification", type: "Identity", status: "Received", dateUploaded: "2025-10-17", expiryDate: "2028-10-17" },
+  // ── Woodland Trust ────────────────────────────────────────────────────────
+  { id: "dd-woodland-01", charityId: "woodland", documentName: "Articles of Association", type: "Governance", status: "Pending", dateUploaded: "", expiryDate: "" },
+  { id: "dd-woodland-02", charityId: "woodland", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Pending", dateUploaded: "", expiryDate: "" },
+  { id: "dd-woodland-03", charityId: "woodland", documentName: "Charity Commission Registration", type: "Regulatory", status: "Pending", dateUploaded: "", expiryDate: "" },
+  // ── Cancer Research UK ────────────────────────────────────────────────────
+  { id: "dd-cruk-01", charityId: "cruk", documentName: "Royal Charter", type: "Governance", status: "Pending", dateUploaded: "", expiryDate: "" },
+  { id: "dd-cruk-02", charityId: "cruk", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Pending", dateUploaded: "", expiryDate: "" },
+  { id: "dd-cruk-03", charityId: "cruk", documentName: "Charity Commission Registration", type: "Regulatory", status: "Pending", dateUploaded: "", expiryDate: "" },
+  // ── National Youth Orchestra ──────────────────────────────────────────────
+  { id: "dd-nyo-01", charityId: "nyo", documentName: "Articles of Association", type: "Governance", status: "Received", dateUploaded: "2025-03-14", expiryDate: "" },
+  { id: "dd-nyo-02", charityId: "nyo", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Received", dateUploaded: "2025-03-14", expiryDate: "2026-09-30" },
+  { id: "dd-nyo-03", charityId: "nyo", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2025-03-14", expiryDate: "" },
+  { id: "dd-nyo-04", charityId: "nyo", documentName: "Bank Statement (Barclays)", type: "Financial", status: "Received", dateUploaded: "2025-03-15", expiryDate: "2026-03-15" },
+  { id: "dd-nyo-05", charityId: "nyo", documentName: "Contact ID Verification", type: "Identity", status: "Received", dateUploaded: "2025-03-16", expiryDate: "2028-03-16" },
+  // ── Victoria & Albert Museum ──────────────────────────────────────────────
+  { id: "dd-vam-01", charityId: "vam", documentName: "Royal Charter", type: "Governance", status: "Received", dateUploaded: "2026-01-16", expiryDate: "" },
+  { id: "dd-vam-02", charityId: "vam", documentName: "Annual Accounts 2024-25", type: "Financial", status: "Pending", dateUploaded: "", expiryDate: "" },
+  { id: "dd-vam-03", charityId: "vam", documentName: "Charity Commission Registration", type: "Regulatory", status: "Received", dateUploaded: "2026-01-16", expiryDate: "" }
+];
+const payments = [
+  // ── NSPCC payments ──────────────────────────────────────────────────────
+  { id: "pay-nspcc-01", grantId: "gr-nspcc-001", charityId: "nspcc", amount: 75e3, status: "Received", scheduledDate: "2025-07-18", sentDate: "2025-07-22", reference: "PRISM-2025-0722-NSPCC-1", bankRef: "FPS-8291740" },
+  { id: "pay-nspcc-02", grantId: "gr-nspcc-001", charityId: "nspcc", amount: 75e3, status: "Received", scheduledDate: "2025-10-15", sentDate: "2025-10-17", reference: "PRISM-2025-1017-NSPCC-2", bankRef: "FPS-8437012" },
+  { id: "pay-nspcc-03", grantId: "gr-nspcc-002", charityId: "nspcc", amount: 85e3, status: "Scheduled", scheduledDate: "2026-01-15", sentDate: "", reference: "PRISM-2026-0115-NSPCC-3", bankRef: "" },
+  { id: "pay-nspcc-04", grantId: "gr-nspcc-003", charityId: "nspcc", amount: 105e3, status: "Scheduled", scheduledDate: "2026-03-20", sentDate: "", reference: "PRISM-2026-0320-NSPCC-4", bankRef: "" },
+  // ── Tate payments ──────────────────────────────────────────────────────
+  { id: "pay-tate-01", grantId: "gr-tate-001", charityId: "tate", amount: 6e4, status: "Received", scheduledDate: "2025-05-28", sentDate: "2025-06-02", reference: "PRISM-2025-0602-TATE-1", bankRef: "FPS-7890234" },
+  { id: "pay-tate-02", grantId: "gr-tate-001", charityId: "tate", amount: 6e4, status: "Received", scheduledDate: "2025-09-01", sentDate: "2025-09-03", reference: "PRISM-2025-0903-TATE-2", bankRef: "FPS-8120456" },
+  { id: "pay-tate-03", grantId: "gr-tate-002", charityId: "tate", amount: 6e4, status: "Scheduled", scheduledDate: "2026-04-15", sentDate: "", reference: "PRISM-2026-0415-TATE-3", bankRef: "" },
+  // ── BHF payments ───────────────────────────────────────────────────────
+  { id: "pay-bhf-01", grantId: "gr-bhf-001", charityId: "bhf", amount: 75e3, status: "Received", scheduledDate: "2025-04-22", sentDate: "2025-04-28", reference: "PRISM-2025-0428-BHF-1", bankRef: "FPS-7654321" },
+  { id: "pay-bhf-02", grantId: "gr-bhf-001", charityId: "bhf", amount: 75e3, status: "Received", scheduledDate: "2025-08-01", sentDate: "2025-08-04", reference: "PRISM-2025-0804-BHF-2", bankRef: "FPS-7998412" },
+  { id: "pay-bhf-03", grantId: "gr-bhf-002", charityId: "bhf", amount: 95e3, status: "Received", scheduledDate: "2025-09-28", sentDate: "2025-10-01", reference: "PRISM-2025-1001-BHF-3", bankRef: "FPS-8102938" },
+  { id: "pay-bhf-04", grantId: "gr-bhf-003", charityId: "bhf", amount: 125e3, status: "Processing", scheduledDate: "2026-02-01", sentDate: "", reference: "PRISM-2026-0201-BHF-4", bankRef: "" },
+  { id: "pay-bhf-05", grantId: "gr-bhf-004", charityId: "bhf", amount: 15e4, status: "Scheduled", scheduledDate: "2026-04-15", sentDate: "", reference: "PRISM-2026-0415-BHF-5", bankRef: "" },
+  // ── WWF payments ───────────────────────────────────────────────────────
+  { id: "pay-wwf-01", grantId: "gr-wwf-001", charityId: "wwf", amount: 7e4, status: "Received", scheduledDate: "2025-06-25", sentDate: "2025-07-01", reference: "PRISM-2025-0701-WWF-1", bankRef: "FPS-7812093" },
+  { id: "pay-wwf-02", grantId: "gr-wwf-001", charityId: "wwf", amount: 7e4, status: "Received", scheduledDate: "2025-11-01", sentDate: "2025-11-04", reference: "PRISM-2025-1104-WWF-2", bankRef: "FPS-8309102" },
+  { id: "pay-wwf-03", grantId: "gr-wwf-002", charityId: "wwf", amount: 135e3, status: "Scheduled", scheduledDate: "2026-03-15", sentDate: "", reference: "PRISM-2026-0315-WWF-3", bankRef: "" },
+  // ── Shelter payments ───────────────────────────────────────────────────
+  { id: "pay-shelter-01", grantId: "gr-shelter-001", charityId: "shelter", amount: 37500, status: "Received", scheduledDate: "2025-08-08", sentDate: "2025-08-12", reference: "PRISM-2025-0812-SHELT-1", bankRef: "FPS-7921034" },
+  { id: "pay-shelter-02", grantId: "gr-shelter-001", charityId: "shelter", amount: 37500, status: "Received", scheduledDate: "2025-11-15", sentDate: "2025-11-18", reference: "PRISM-2025-1118-SHELT-2", bankRef: "FPS-8287461" },
+  { id: "pay-shelter-03", grantId: "gr-shelter-002", charityId: "shelter", amount: 6e4, status: "Processing", scheduledDate: "2026-01-20", sentDate: "", reference: "PRISM-2026-0120-SHELT-3", bankRef: "" },
+  { id: "pay-shelter-04", grantId: "gr-shelter-003", charityId: "shelter", amount: 3e4, status: "Scheduled", scheduledDate: "2026-04-10", sentDate: "", reference: "PRISM-2026-0410-SHELT-4", bankRef: "" },
+  { id: "pay-shelter-05", grantId: "gr-shelter-003", charityId: "shelter", amount: 3e4, status: "Scheduled", scheduledDate: "2026-07-10", sentDate: "", reference: "PRISM-2026-0710-SHELT-5", bankRef: "" },
+  // ── Royal Opera House payments ────────────────────────────────────────────
+  { id: "pay-roh-01", grantId: "gr-roh-001", charityId: "roh", amount: 6e4, status: "Received", scheduledDate: "2025-05-22", sentDate: "2025-05-28", reference: "PRISM-2025-0528-ROH-1", bankRef: "FPS-7745012" },
+  { id: "pay-roh-02", grantId: "gr-roh-001", charityId: "roh", amount: 6e4, status: "Received", scheduledDate: "2025-09-15", sentDate: "2025-09-18", reference: "PRISM-2025-0918-ROH-2", bankRef: "FPS-8145678" },
+  // ── Eton College Foundation payments ──────────────────────────────────────
+  { id: "pay-eton-01", grantId: "gr-eton-001", charityId: "eton", amount: 2e5, status: "Scheduled", scheduledDate: "2026-02-20", sentDate: "", reference: "PRISM-2026-0220-ETON-1", bankRef: "" },
+  // ── British Red Cross payments ────────────────────────────────────────────
+  { id: "pay-redcross-01", grantId: "gr-redcross-001", charityId: "redcross", amount: 1e5, status: "Received", scheduledDate: "2025-09-01", sentDate: "2025-09-05", reference: "PRISM-2025-0905-RC-1", bankRef: "FPS-8056789" },
+  // ── Mind payments ─────────────────────────────────────────────────────────
+  { id: "pay-mind-01", grantId: "gr-mind-001", charityId: "mind", amount: 9e4, status: "Received", scheduledDate: "2025-07-01", sentDate: "2025-07-08", reference: "PRISM-2025-0708-MIND-1", bankRef: "FPS-7823456" },
+  { id: "pay-mind-02", grantId: "gr-mind-001", charityId: "mind", amount: 9e4, status: "Received", scheduledDate: "2025-12-01", sentDate: "2025-12-04", reference: "PRISM-2025-1204-MIND-2", bankRef: "FPS-8345678" },
+  // ── National Youth Orchestra payments ─────────────────────────────────────
+  { id: "pay-nyo-01", grantId: "gr-nyo-001", charityId: "nyo", amount: 6e4, status: "Received", scheduledDate: "2025-04-25", sentDate: "2025-04-30", reference: "PRISM-2025-0430-NYO-1", bankRef: "FPS-7712345" }
+];
+function getGrantees() {
+  return grantees;
+}
+const getCharities = getGrantees;
+function getGranteeById(id) {
+  return grantees.find((g) => g.id === id);
+}
+function getGrantsForCharity(charityId) {
+  return grants.filter((g) => g.charityId === charityId);
+}
+function getDocumentsForCharity(charityId) {
+  return ddDocuments.filter((d) => d.charityId === charityId);
+}
+function getPaymentsForCharity(charityId) {
+  return payments.filter((p) => p.charityId === charityId);
+}
+function getAllGrants() {
+  return grants;
+}
+function getReportsDue() {
+  return grants.filter(
+    (g) => g.reportStatus === "Due" || g.reportStatus === "Overdue"
+  );
+}
+function formatCurrency(n) {
+  return "£" + n.toLocaleString("en-GB", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+function formatDate(d) {
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+export { getGranteeById as a, getGrantsForCharity as b, getDocumentsForCharity as c, getPaymentsForCharity as d, formatDate as e, formatCurrency as f, getGrantees as g, getReportsDue as h, getCharities as i, getAllGrants as j };

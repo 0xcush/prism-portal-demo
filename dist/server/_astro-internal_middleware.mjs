@@ -1,17 +1,10 @@
-import { d as defineMiddleware, s as sequence } from './chunks/index_Cf5IZRdW.mjs';
-import './chunks/request-context_DOPo75of.mjs';
+import { o as onRequest$1 } from './chunks/middleware_Be7yoBvJ.mjs';
 import 'es-module-lexer';
-import './chunks/astro-designed-error-pages_d3EFyVgA.mjs';
+import './chunks/astro-designed-error-pages_Ccn4-mmW.mjs';
 import 'piccolore';
-import './chunks/astro/server_C-UfuYaI.mjs';
+import './chunks/astro/server_Dh-RJMVH.mjs';
 import 'clsx';
-
-const onRequest$1 = defineMiddleware(async (context, next) => {
-  const { pathname } = context.url;
-  {
-    return next();
-  }
-});
+import { s as sequence } from './chunks/sequence_DnskqGX6.mjs';
 
 const onRequest = sequence(
 	

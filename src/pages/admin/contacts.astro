@@ -1,0 +1,44 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { loadAdminData } from '../../lib/data-loader';
+import ContactsTable from '../../components/admin/ContactsTable';
+const BASE = import.meta.env.BASE_URL;
+
+const { contacts } = await loadAdminData();
+const overdueContacts = contacts.filter(c => c.followUpStatus === 'Overdue');
+const dueContacts = contacts.filter(c => c.followUpStatus === 'Due');
+---
+
+<AdminLayout title="Contacts - Prism Admin" activePage="contacts">
+  <Breadcrumbs items={[{label:"Admin", href:`${BASE}admin`}, {label:"Contacts"}]} />
+  <div class="mb-6 animate-fade-up">
+    <h2 class="text-2xl font-bold text-slate-900">Contacts</h2>
+    <p class="text-sm text-slate-500 mt-1">Contact management and follow-up tracking</p>
+  </div>
+
+  <!-- Summary -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Contacts</p>
+      <p class="text-xl font-bold text-slate-900 mt-1">{contacts.length}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-1">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Overdue</p>
+      <p class="text-xl font-bold text-red-600 mt-1">{overdueContacts.length}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-2">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Due Soon</p>
+      <p class="text-xl font-bold text-amber-600 mt-1">{dueContacts.length}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-3">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">On Track</p>
+      <p class="text-xl font-bold text-emerald-600 mt-1">{contacts.filter(c => c.followUpStatus === 'On Track').length}</p>
+    </div>
+  </div>
+
+  <!-- Contacts Table -->
+  <div class="animate-fade-up-4">
+    <ContactsTable client:load contacts={JSON.parse(JSON.stringify(contacts))} />
+  </div>
+</AdminLayout>

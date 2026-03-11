@@ -1,0 +1,64 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { loadAdminData } from '../../lib/data-loader';
+import { formatCurrency } from '../../data/admin';
+import StageBarChart from '../../components/admin/StageBarChart';
+import PipelineTable from '../../components/admin/PipelineTable';
+const BASE = import.meta.env.BASE_URL;
+
+const { prospects } = await loadAdminData();
+
+// Compute stage data for the bar chart
+const stageOrder = ['Lead', 'Initial Contact', 'Questions Sent', 'Fee Proposal', 'Contract', 'Onboarding', 'Active Client', 'Handed to RM'];
+const prospectsByStage: Record<string, typeof prospects> = {};
+for (const p of prospects) {
+  if (!prospectsByStage[p.stage]) prospectsByStage[p.stage] = [];
+  prospectsByStage[p.stage].push(p);
+}
+const stageChartData = stageOrder.map(stage => {
+  const items = prospectsByStage[stage] || [];
+  return {
+    stage,
+    count: items.length,
+    value: items.reduce((s, p) => s + p.giftSize, 0),
+  };
+});
+const totalValue = prospects.reduce((s, p) => s + p.giftSize, 0);
+const overdueCount = prospects.filter(p => p.followUpStatus === 'Overdue').length;
+---
+
+<AdminLayout title="Pipeline - Prism Admin" activePage="pipeline">
+  <Breadcrumbs items={[{label:"Admin", href:`${BASE}admin`}, {label:"Pipeline"}]} />
+  <!-- Page Header -->
+  <div class="mb-6 animate-fade-up">
+    <h2 class="text-2xl font-bold text-slate-900">Pipeline</h2>
+    <p class="text-sm text-slate-500 mt-1">Prospect management and conversion tracking</p>
+  </div>
+
+  <!-- Summary Stats -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Prospects</p>
+      <p class="text-xl font-bold text-slate-900 mt-1">{prospects.length}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-1">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Value</p>
+      <p class="text-xl font-bold text-slate-900 mt-1">{formatCurrency(totalValue)}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-2">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Overdue Follow-ups</p>
+      <p class="text-xl font-bold text-red-600 mt-1">{overdueCount}</p>
+    </div>
+  </div>
+
+  <!-- Pipeline Stage Chart -->
+  <div class="mb-6 animate-fade-up-3">
+    <StageBarChart client:visible data={stageChartData} title="Prospects by Pipeline Stage" />
+  </div>
+
+  <!-- Pipeline Table -->
+  <div class="animate-fade-up-3">
+    <PipelineTable client:load prospects={JSON.parse(JSON.stringify(prospects))} />
+  </div>
+</AdminLayout>

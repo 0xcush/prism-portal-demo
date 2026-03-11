@@ -1,0 +1,51 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import { loadDonorClient } from '../lib/donor-data-loader';
+import StatementDownload from '../components/StatementDownload';
+
+const clientId = Astro.url.searchParams.get('client') || 'ashford';
+const client = await loadDonorClient(clientId);
+
+if (!client) {
+  return Astro.redirect(import.meta.env.BASE_URL);
+}
+---
+
+<DashboardLayout
+  title={`${client.name} - Statements`}
+  clientId={client.id}
+  clientName={client.name}
+  activePage="statements"
+  relationshipManager={client.relationshipManager}
+>
+  <div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+      <div>
+        <h2 class="text-2xl font-semibold text-slate-800">Statements & Documents</h2>
+        <p class="text-sm text-slate-400 mt-1">Download fund statements, annual reports, and tax documents</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <p class="text-xs text-slate-400">{client.statements.length} documents available</p>
+        <button onclick="window.print()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition-colors no-print">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Print
+        </button>
+      </div>
+    </div>
+
+    <!-- Info banner -->
+    <div class="flex items-start gap-3 p-4 rounded-lg bg-blue-50 border border-blue-100">
+      <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <div>
+        <p class="text-sm text-blue-800 font-medium">AI-Generated Statements</p>
+        <p class="text-xs text-blue-600 mt-0.5">Statements are automatically generated and verified by our AI systems, ensuring accuracy and timely delivery.</p>
+      </div>
+    </div>
+
+    <StatementDownload client:load statements={client.statements} />
+  </div>
+</DashboardLayout>

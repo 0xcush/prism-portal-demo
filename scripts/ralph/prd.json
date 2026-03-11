@@ -1,0 +1,77 @@
+{
+  "description": "Prism Portal & CRM Demo — Complete Buildout for Director Presentation",
+  "branchName": "main",
+  "deploy": false,
+  "userStories": [
+    {
+      "id": "S1",
+      "title": "Extract shared utilities and fix code quality",
+      "priority": 1,
+      "passes": true,
+      "description": "Create src/utils/format.ts with shared formatCurrency and formatDate functions. Remove all 8 duplicate definitions from individual components. Fix CustomTooltip 'any' types in AssetChart.tsx and IssueAreaBreakdown.tsx. Replace all document.getElementById() DOM manipulation in GrantHistory.tsx and StatementDownload.tsx with proper React state (useState). Verify build passes after all changes."
+    },
+    {
+      "id": "S2",
+      "title": "Add aria-labels and accessibility fixes",
+      "priority": 2,
+      "passes": true,
+      "description": "Add aria-label attributes to all 45+ inline SVG icons across all components (ClientHeader, BalanceCards, GrantHistory, PendingGrants, TransactionHistory, RequestGrant, StatementDownload, Layout.astro, login.astro, index.astro). Add role='img' to decorative SVGs. Ensure all interactive elements have tabIndex and keyboard event handlers. Add focus-visible styles to all buttons. Verify build passes."
+    },
+    {
+      "id": "S3",
+      "title": "Fix Contact RM button and make Export buttons functional",
+      "priority": 3,
+      "passes": true,
+      "description": "ClientHeader.tsx: Change Contact RM button to an <a href='mailto:{rm}@prismthegiftfund.co.uk'> link that opens email client. GrantHistory.tsx: Make Export button generate and download a CSV file of all grants. TransactionHistory.tsx: Make Export CSV button generate and download a CSV of all transactions. GrantHistory.tsx: Either make Filter button show a working dropdown filter by status (Paid/Approved/In Review/Requested) or remove it. StatementDownload.tsx: Make Download buttons show realistic download feedback. All using React state, no DOM manipulation. Verify build passes."
+    },
+    {
+      "id": "S4",
+      "title": "Add empty states, error boundaries, and loading polish",
+      "priority": 4,
+      "passes": true,
+      "description": "Create src/components/ErrorBoundary.tsx - a React error boundary that catches component crashes and shows a graceful fallback. Wrap all client:load components in the dashboard with error boundaries. Add empty state displays to GrantHistory (when no grants), TransactionHistory (when no transactions). Add smooth transition animations to PendingGrants ProgressBar (transition-all duration-300). Ensure RequestGrant form shows proper validation errors (red borders, error text below fields). Verify build passes."
+    },
+    {
+      "id": "S5",
+      "title": "Optimize performance - lazy load charts and reduce bundle",
+      "priority": 5,
+      "passes": true,
+      "description": "In dashboard.astro, change AssetChart and IssueAreaBreakdown from client:load to client:visible so Recharts only loads when charts scroll into view. This defers the 359KB Recharts bundle. Add a simple loading placeholder (gray rounded rectangle with pulse animation) that shows before charts hydrate. Verify build passes and check that bundle is properly code-split."
+    },
+    {
+      "id": "S6",
+      "title": "Complete transaction data for all clients",
+      "priority": 6,
+      "passes": true,
+      "description": "In src/data/clients.ts, add 10 more transactions to the Greenfield client (currently only 5) and 8 more to Dr. Chen (currently only 7) so all clients have 15 transactions. Use realistic Prism data: donations received, grant disbursements, investment income, quarterly fees, fund rebalances. Ensure running balances are mathematically consistent. Verify build passes."
+    },
+    {
+      "id": "S7",
+      "title": "Responsive design fixes for mobile",
+      "priority": 7,
+      "passes": true,
+      "description": "Fix AssetChart.tsx: on sm breakpoint, stack the pie chart and legend vertically (they currently try to sit side-by-side and overflow). Fix GrantHistory and TransactionHistory tables: add sticky first column (Date) on mobile horizontal scroll. Ensure login.astro form looks good on iPhone SE (320px). Test all pages at sm/md/lg breakpoints. Verify build passes."
+    },
+    {
+      "id": "S8",
+      "title": "Populate Notion CRM Client Accounts database",
+      "priority": 8,
+      "passes": true,
+      "description": "Using Notion MCP tools, populate the Client Accounts database (inside page 31fe88f47951815483d5f796e9abfac2) with 5 sample records: The Harrington Foundation (DAF, £2.27M), Greenfield Community Trust (CF, £890K), Dr. Sarah Chen (DAF, £4.1M), Richard Hargreaves (new DAF, £450K - from Prospects), Elizabeth Grant (new DAF, £1.8M - from Prospects). Include: Account Number, Cash Balance, Investment Balance, Offshore Balance (for CF), Total Fund Value, YTD Return, Entity (PTGF/TPCT), Relationship Manager, Status."
+    },
+    {
+      "id": "S9",
+      "title": "Populate Notion CRM Grant Pipeline database",
+      "priority": 9,
+      "passes": true,
+      "description": "Using Notion MCP tools, populate the Grant Pipeline database (inside page 31fe88f47951815483d5f796e9abfac2) with 8 grant records across all workflow stages. Include at least 2 grants for 'Save the Children UK' at different stages from different donors to demonstrate concurrent DD. Stages: Requested (2), First Contact (1), Awaiting Bank Statement (1), In Review (2), Approved (1), Paid (1). Each record needs: Client/Donor, Charity, Amount, Stage, DD Status, DD Documents, Date Requested, Assigned To."
+    },
+    {
+      "id": "S10",
+      "title": "Add Board views to Notion CRM databases",
+      "priority": 10,
+      "passes": true,
+      "description": "Using Notion MCP tools on the BD & CRM Demo page (31fe88f47951815483d5f796e9abfac2): Add a Board view to Prospects/Pipeline database grouped by Stage. Add a Board view to Grant Pipeline database grouped by Stage. Add a Gallery view to Firms database. Backfill Last Interaction dates on all 9 Firms records. Remove the duplicate 'Schroders Edinburgh Lunch & Learn' BD Activity. Link missing Contact/Firm relations on Interactions where absent."
+    }
+  ]
+}

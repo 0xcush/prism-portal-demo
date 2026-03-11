@@ -1,0 +1,39 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import { loadAllDonorClients } from '../../lib/donor-data-loader';
+import type { ClientData, Grant } from '../../data/clients';
+import GrantDetail from '../../components/GrantDetail';
+
+export async function getStaticPaths() {
+  const allClients = await loadAllDonorClients();
+  const paths: { params: { id: string }; props: { grant: Grant; client: ClientData } }[] = [];
+
+  for (const client of allClients) {
+    for (const grant of client.grants) {
+      paths.push({
+        params: { id: grant.id },
+        props: { grant, client },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { grant, client } = Astro.props;
+---
+
+<DashboardLayout
+  title={`${grant.charity} - Grant Detail`}
+  clientId={client.id}
+  clientName={client.name}
+  activePage="grants"
+  relationshipManager={client.relationshipManager}
+>
+  <GrantDetail
+    client:load
+    grant={grant}
+    clientId={client.id}
+    baseUrl={import.meta.env.BASE_URL}
+  />
+</DashboardLayout>

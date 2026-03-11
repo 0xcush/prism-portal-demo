@@ -1,0 +1,46 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import { loadDonorClient } from '../lib/donor-data-loader';
+import GrantHistory from '../components/GrantHistory';
+import PendingGrants from '../components/PendingGrants';
+import RequestGrant from '../components/RequestGrant';
+
+const clientId = Astro.url.searchParams.get('client') || 'ashford';
+const client = await loadDonorClient(clientId);
+
+if (!client) {
+  return Astro.redirect(import.meta.env.BASE_URL);
+}
+
+const pendingGrants = client.grants.filter(
+  (g) => g.status === 'In Review' || g.status === 'Requested' || g.status === 'Approved'
+);
+---
+
+<DashboardLayout
+  title={`${client.name} - Grants`}
+  clientId={client.id}
+  clientName={client.name}
+  activePage="grants"
+  relationshipManager={client.relationshipManager}
+>
+  <div class="space-y-6">
+    <div class="animate-fade-up">
+      <h2 class="text-2xl font-semibold text-slate-800">Grants</h2>
+      <p class="text-sm text-slate-400 mt-1">Manage grant recommendations and track disbursements</p>
+    </div>
+
+    <!-- Top row: Pending + Request -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-up-1">
+      <div class="lg:col-span-2">
+        <PendingGrants client:load grants={pendingGrants} />
+      </div>
+      <RequestGrant client:load clientName={client.name} />
+    </div>
+
+    <!-- Full grant history -->
+    <div class="animate-fade-up-2">
+      <GrantHistory client:load grants={client.grants} baseUrl={import.meta.env.BASE_URL} />
+    </div>
+  </div>
+</DashboardLayout>

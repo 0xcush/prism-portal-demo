@@ -1,0 +1,90 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import HoldingsTable from '../components/HoldingsTable';
+import AssetChart from '../components/AssetChart';
+import { formatCurrency } from '../data/clients';
+import { loadDonorClient } from '../lib/donor-data-loader';
+
+const clientId = Astro.url.searchParams.get('client') || 'ashford';
+const client = await loadDonorClient(clientId);
+
+if (!client) {
+  return Astro.redirect(import.meta.env.BASE_URL);
+}
+---
+
+<DashboardLayout
+  title={`${client.name} - Investments`}
+  clientId={client.id}
+  clientName={client.name}
+  activePage="investments"
+  relationshipManager={client.relationshipManager}
+>
+  <div class="space-y-6">
+    <div>
+      <h2 class="text-2xl font-semibold text-slate-800">Investments</h2>
+      <p class="text-sm text-slate-400 mt-1">Portfolio overview and investment manager contact</p>
+    </div>
+
+    <!-- Banner -->
+    <div class="flex items-start gap-3 p-4 rounded-lg bg-amber-50 border border-amber-100">
+      <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <div>
+        <p class="text-sm text-amber-800 font-medium">Investment portfolio management is handled by your investment manager</p>
+        <p class="text-xs text-amber-600 mt-0.5">Contact your relationship manager for details on investment strategy, rebalancing, or performance queries.</p>
+      </div>
+    </div>
+
+    <!-- Summary Card -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+      <h3 class="text-lg font-semibold text-slate-800 mb-4">Investment Summary</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div>
+          <p class="text-xs text-slate-400 uppercase tracking-wider mb-1">Total Invested</p>
+          <p class="text-2xl font-bold text-slate-800">{formatCurrency(client.balances.investments)}</p>
+        </div>
+        <div>
+          <p class="text-xs text-slate-400 uppercase tracking-wider mb-1">YTD Return</p>
+          <p class="text-2xl font-bold text-emerald-600">+{client.ytdReturn}%</p>
+        </div>
+        <div>
+          <p class="text-xs text-slate-400 uppercase tracking-wider mb-1">Total Fund Value</p>
+          <p class="text-2xl font-bold text-slate-800">{formatCurrency(client.balances.total)}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Asset Allocation Chart -->
+    <AssetChart
+      client:load
+      data={client.assetDistribution}
+      totalInvested={client.balances.investments}
+    />
+
+    <!-- Holdings Table -->
+    <HoldingsTable client:load holdings={client.holdings} />
+
+    <!-- RM Contact for Investments -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+      <h3 class="text-base font-semibold text-slate-800 mb-3">Investment Queries</h3>
+      <p class="text-sm text-slate-500 mb-4">For questions about your portfolio, asset allocation, or investment performance, contact your relationship manager.</p>
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-full bg-navy-100 flex items-center justify-center flex-shrink-0">
+          <span class="text-sm font-bold text-navy-600">{client.relationshipManager.split(' ').map((n: string) => n[0]).join('')}</span>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-slate-800">{client.relationshipManager}</p>
+          <p class="text-xs text-slate-400">james.whitfield@prismthegiftfund.co.uk &middot; +44 20 7946 0321</p>
+        </div>
+        <a href="#" class="ml-auto inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-navy-600 text-sm text-white font-medium hover:bg-navy-700 transition-colors shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+          </svg>
+          Schedule a Call
+        </a>
+      </div>
+    </div>
+  </div>
+</DashboardLayout>

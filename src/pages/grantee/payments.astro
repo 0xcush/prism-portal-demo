@@ -1,0 +1,55 @@
+---
+import GranteeLayout from '../../layouts/GranteeLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import PaymentsTable from '../../components/grantee/PaymentsTable';
+import PaymentForecast from '../../components/grantee/PaymentForecast';
+import { getGrantees, getGranteeById, getPaymentsForCharity, getGrantsForCharity, formatCurrency, formatDate } from '../../data/grantees';
+
+const charityId = Astro.url.searchParams.get('charity') || getGrantees()[0]?.id || '';
+const charity = getGranteeById(charityId);
+const payments = getPaymentsForCharity(charityId);
+const grants = getGrantsForCharity(charityId);
+
+const totalReceived = payments.filter(p => p.status === 'Received' || p.status === 'Sent').reduce((s, p) => s + p.amount, 0);
+const totalScheduled = payments.filter(p => p.status === 'Scheduled').reduce((s, p) => s + p.amount, 0);
+
+const base = import.meta.env.BASE_URL;
+---
+
+<GranteeLayout title="Payments - Prism" activePage="payments" charityName={charity?.charityName}>
+  <Breadcrumbs items={[{label:"Grantee", href:`${base}grantee`}, {label:charity?.charityName || "Charity", href:`${base}grantee/dashboard?charity=${charityId}`}, {label:"Payments"}]} />
+  <!-- Page Header -->
+  <div class="mb-8 animate-fade-up">
+    <h2 class="text-2xl font-bold text-slate-900">Payments</h2>
+    <p class="text-sm text-slate-500 mt-1">Payment timeline and history</p>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 animate-fade-up">
+      <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Received</span>
+      <p class="text-2xl font-bold text-emerald-700 mt-2">{formatCurrency(totalReceived)}</p>
+      <p class="text-xs text-slate-500 mt-1">{payments.filter(p => p.status === 'Received' || p.status === 'Sent').length} payment{payments.filter(p => p.status === 'Received' || p.status === 'Sent').length !== 1 ? 's' : ''}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 animate-fade-up-1">
+      <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Scheduled</span>
+      <p class="text-2xl font-bold text-slate-900 mt-2">{formatCurrency(totalScheduled)}</p>
+      <p class="text-xs text-slate-500 mt-1">{payments.filter(p => p.status === 'Scheduled').length} upcoming</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 animate-fade-up-2">
+      <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Payments</span>
+      <p class="text-2xl font-bold text-slate-900 mt-2">{payments.length}</p>
+      <p class="text-xs text-slate-500 mt-1">all time</p>
+    </div>
+  </div>
+
+  <!-- Payment Forecast -->
+  <div class="mb-8 animate-fade-up-3">
+    <PaymentForecast payments={payments} client:visible />
+  </div>
+
+  <!-- Payments Table -->
+  <div class="animate-fade-up-4">
+    <PaymentsTable payments={payments} client:load />
+  </div>
+</GranteeLayout>

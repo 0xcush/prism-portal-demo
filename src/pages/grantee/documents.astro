@@ -1,0 +1,52 @@
+---
+import GranteeLayout from '../../layouts/GranteeLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import DocumentsTable from '../../components/grantee/DocumentsTable';
+import DocumentUploadZone from '../../components/grantee/DocumentUploadZone';
+import { getGrantees, getGranteeById, getDocumentsForCharity, formatDate } from '../../data/grantees';
+const BASE = import.meta.env.BASE_URL;
+
+const charityId = Astro.url.searchParams.get('charity') || getGrantees()[0]?.id || '';
+const charity = getGranteeById(charityId);
+const documents = getDocumentsForCharity(charityId);
+
+const received = documents.filter(d => d.status === 'Received').length;
+const pending = documents.filter(d => d.status === 'Pending').length;
+const expired = documents.filter(d => d.status === 'Expired').length;
+const total = documents.length;
+const completionPct = total > 0 ? Math.round((received / total) * 100) : 0;
+---
+
+<GranteeLayout title="Documents - Prism" activePage="documents" charityName={charity?.charityName}>
+  <Breadcrumbs items={[{label:"Grantee", href:`${BASE}grantee`}, {label:charity?.charityName || "Charity", href:`${BASE}grantee/dashboard?charity=${charityId}`}, {label:"Documents"}]} />
+  <!-- Page Header -->
+  <div class="mb-8 animate-fade-up">
+    <h2 class="text-2xl font-bold text-slate-900">Documents</h2>
+    <p class="text-sm text-slate-500 mt-1">Due diligence document checklist</p>
+  </div>
+
+  <!-- Progress Bar Section -->
+  <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 mb-8 animate-fade-up-1">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-sm font-semibold text-slate-800">Document Completion: {completionPct}%</span>
+    </div>
+    <div class="w-full bg-slate-200 rounded-full h-3 mb-3">
+      <div class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style={`width: ${completionPct}%`}></div>
+    </div>
+    <p class="text-xs text-slate-500">
+      {received} of {total} documents received
+      &middot; {pending} pending
+      &middot; <span class={expired > 0 ? 'text-red-600 font-medium' : ''}>{expired} expired</span>
+    </p>
+  </div>
+
+  <!-- Upload Zone -->
+  <div class="mb-8 animate-fade-up-2">
+    <DocumentUploadZone client:load />
+  </div>
+
+  <!-- Documents Table -->
+  <div class="animate-fade-up-3">
+    <DocumentsTable documents={documents} client:load />
+  </div>
+</GranteeLayout>

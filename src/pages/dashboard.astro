@@ -1,0 +1,115 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import { loadDonorClient } from '../lib/donor-data-loader';
+import BalanceCards from '../components/BalanceCards';
+import FundPerformanceChart from '../components/FundPerformanceChart';
+import RecentActivity from '../components/RecentActivity';
+import PendingGrants from '../components/PendingGrants';
+import ImpactSummary from '../components/ImpactSummary';
+
+const clientId = Astro.url.searchParams.get('client') || 'ashford';
+const client = await loadDonorClient(clientId);
+
+if (!client) {
+  return Astro.redirect(import.meta.env.BASE_URL);
+}
+
+const pendingGrants = client.grants.filter(
+  (g) => g.status === 'In Review' || g.status === 'Requested' || g.status === 'Approved'
+);
+const paidGrants = client.grants.filter((g) => g.status === 'Paid');
+const totalGranted = paidGrants.reduce((sum, g) => sum + g.amount, 0);
+const nextStatement = client.statements[0];
+---
+
+<DashboardLayout
+  title={`${client.name} - Overview`}
+  clientId={client.id}
+  clientName={client.name}
+  activePage="overview"
+  relationshipManager={client.relationshipManager}
+>
+  <div class="space-y-6">
+    <!-- Page header -->
+    <div class="animate-fade-up">
+      <h2 class="text-2xl font-semibold text-slate-800">Welcome back, {client.name}</h2>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{client.accountType === 'DAF' ? 'Donor Advised Fund' : 'Collective Fund'} &middot; {client.accountNumber}</p>
+      <p class="text-sm text-slate-400 mt-1">Here's your fund overview as of 10 March 2026</p>
+
+      <!-- Quick metrics strip -->
+      <div class="flex flex-wrap items-center gap-3 mt-4">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          {paidGrants.length} grants completed
+        </span>
+        {pendingGrants.length > 0 && (
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse-subtle"></span>
+            {pendingGrants.length} in progress
+          </span>
+        )}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Next statement: {nextStatement?.period || 'Q2 2026'}
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-navy-50 text-navy-600 border border-navy-100">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          All compliance checks passed
+        </span>
+      </div>
+    </div>
+
+    <!-- Contact Your Relationship Manager -->
+    <div class="animate-fade-up bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div class="flex items-center gap-4 flex-1">
+          <div class="w-12 h-12 rounded-full bg-navy-100 flex items-center justify-center flex-shrink-0">
+            <span class="text-sm font-bold text-navy-600">{client.relationshipManager.split(' ').map((n: string) => n[0]).join('')}</span>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 uppercase tracking-wider">Your Relationship Manager</p>
+            <p class="text-base font-semibold text-slate-800">{client.relationshipManager}</p>
+            <p class="text-xs text-slate-400 mt-0.5">james.whitfield@prismthegiftfund.co.uk &middot; +44 20 7946 0321</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 sm:flex-shrink-0">
+          <a href="mailto:james.whitfield@prismthegiftfund.co.uk" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+            Email
+          </a>
+          <a href="#" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-navy-600 text-sm text-white font-medium hover:bg-navy-700 transition-colors shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+            Schedule a Call
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Balance Cards -->
+    <div class="animate-fade-up-1">
+      <BalanceCards client:load balances={client.balances} ytdReturn={client.ytdReturn} accountType={client.accountType} />
+    </div>
+
+    <!-- Impact & Performance row -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 animate-fade-up-2">
+      <div class="xl:col-span-2">
+        <ImpactSummary client:load grants={client.grants} />
+      </div>
+      <FundPerformanceChart client:visible data={client.monthlyPerformance} fundName={client.name} />
+    </div>
+
+    <!-- Activity + Pending -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-up-3">
+      <RecentActivity client:load activities={client.recentActivity} maxItems={6} />
+      <PendingGrants client:load grants={pendingGrants} />
+    </div>
+  </div>
+</DashboardLayout>

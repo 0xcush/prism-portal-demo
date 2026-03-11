@@ -1,0 +1,38 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import { loadDonorClient } from '../lib/donor-data-loader';
+import AccountSettings from '../components/AccountSettings';
+
+const clientId = Astro.url.searchParams.get('client') || 'ashford';
+const client = await loadDonorClient(clientId);
+
+if (!client) {
+  return Astro.redirect(import.meta.env.BASE_URL);
+}
+---
+
+<DashboardLayout
+  title={`${client.name} - Account`}
+  clientId={client.id}
+  clientName={client.name}
+  activePage="account"
+  relationshipManager={client.relationshipManager}
+>
+  <div class="space-y-6">
+    <div class="animate-fade-up">
+      <h2 class="text-2xl font-semibold text-slate-800">Account Settings</h2>
+      <p class="text-sm text-slate-400 mt-1">Manage your profile, notifications, and security preferences</p>
+    </div>
+
+    <div class="animate-fade-up-1">
+      <AccountSettings
+        client:load
+        clientName={client.name}
+        accountNumber={client.accountNumber}
+        accountType={client.accountType}
+        relationshipManager={client.relationshipManager}
+        onboardedDate={client.onboardedDate}
+      />
+    </div>
+  </div>
+</DashboardLayout>

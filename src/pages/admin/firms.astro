@@ -1,0 +1,45 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { loadAdminData } from '../../lib/data-loader';
+import FirmsGrid from '../../components/admin/FirmsGrid';
+const BASE = import.meta.env.BASE_URL;
+
+const { firms } = await loadAdminData();
+const activeFirms = firms.filter(f => f.status === 'Active');
+const nurturingFirms = firms.filter(f => f.status === 'Nurturing');
+const totalReferrals = firms.reduce((s, f) => s + f.referralCount, 0);
+---
+
+<AdminLayout title="Firms - Prism Admin" activePage="firms">
+  <Breadcrumbs items={[{label:"Admin", href:`${BASE}admin`}, {label:"Firms"}]} />
+  <div class="mb-6 animate-fade-up">
+    <h2 class="text-2xl font-bold text-slate-900">Intermediary Firms</h2>
+    <p class="text-sm text-slate-500 mt-1">Referral network and relationship management</p>
+  </div>
+
+  <!-- Summary Stats -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Firms</p>
+      <p class="text-xl font-bold text-slate-900 mt-1">{firms.length}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-1">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Active</p>
+      <p class="text-xl font-bold text-emerald-600 mt-1">{activeFirms.length}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-2">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Nurturing</p>
+      <p class="text-xl font-bold text-amber-600 mt-1">{nurturingFirms.length}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-3">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Referrals</p>
+      <p class="text-xl font-bold text-slate-900 mt-1">{totalReferrals}</p>
+    </div>
+  </div>
+
+  <!-- Firms Grid -->
+  <div class="animate-fade-up-4">
+    <FirmsGrid client:load firms={JSON.parse(JSON.stringify(firms))} />
+  </div>
+</AdminLayout>

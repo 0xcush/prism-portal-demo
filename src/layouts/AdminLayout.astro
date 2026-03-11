@@ -1,0 +1,140 @@
+---
+import AdminSidebar from '../components/AdminSidebar.astro';
+import NotificationDropdown from '../components/NotificationDropdown';
+import { ViewTransitions } from 'astro:transitions';
+
+interface Props {
+  title: string;
+  activePage: string;
+}
+const { title, activePage } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="antialiased">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Prism The Gift Fund - Administration" />
+  <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <title>{title}</title>
+  <ViewTransitions />
+  <style>
+    html { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    @media print {
+      #sidebar, #sidebar-overlay, header, footer, button, .no-print { display: none !important; }
+      .lg\:ml-64 { margin-left: 0 !important; }
+      main { padding: 0 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-20 hidden lg:hidden"></div>
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <AdminSidebar activePage={activePage} />
+
+    <!-- Main content area -->
+    <div class="flex-1 flex flex-col lg:ml-64">
+      <!-- Topbar -->
+      <header class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-slate-200 h-16 flex items-center px-4 sm:px-6">
+        <!-- Mobile hamburger -->
+        <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 mr-2 text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors" aria-label="Open menu">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <h1 class="text-lg font-semibold text-slate-800 truncate">Prism Administration</h1>
+
+        <div class="ml-auto flex items-center gap-3">
+          <!-- Search -->
+          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-sm w-56 focus-within:ring-2 focus-within:ring-navy-600 focus-within:border-transparent transition-shadow">
+            <svg class="w-4 h-4 flex-shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              id="topbar-search"
+              placeholder="Search..."
+              class="flex-1 bg-transparent text-slate-700 placeholder-slate-400 outline-none text-sm"
+            />
+          </div>
+
+          <!-- Notifications -->
+          <NotificationDropdown client:load />
+
+          <!-- Avatar -->
+          <div class="w-8 h-8 rounded-full bg-navy-600 flex items-center justify-center">
+            <span class="text-xs font-semibold text-white">SB</span>
+          </div>
+
+          <!-- Logout -->
+          <a href={`${import.meta.env.BASE_URL}login`} class="hidden sm:flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Logout
+          </a>
+        </div>
+      </header>
+
+      <!-- Page content -->
+      <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <slot />
+      </main>
+
+      <!-- Footer -->
+      <footer class="border-t border-slate-100 px-6 py-4">
+        <p class="text-xs text-slate-400 text-center">
+          &copy; 2026 Prism The Gift Fund. Registered Charity No. 1099682
+        </p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    function initSidebar() {
+      const btn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+
+      function openSidebar() {
+        sidebar?.classList.remove('-translate-x-full');
+        overlay?.classList.remove('hidden');
+      }
+      function closeSidebar() {
+        sidebar?.classList.add('-translate-x-full');
+        overlay?.classList.add('hidden');
+      }
+
+      btn?.addEventListener('click', openSidebar);
+      overlay?.addEventListener('click', closeSidebar);
+    }
+
+    initSidebar();
+    document.addEventListener('astro:after-swap', initSidebar);
+
+    function initTopbarSearch() {
+      const input = document.getElementById('topbar-search') as HTMLInputElement | null;
+      if (!input) return;
+      input.addEventListener('input', () => {
+        window.dispatchEvent(new CustomEvent('topbar-search', { detail: input.value }));
+      });
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+          e.preventDefault();
+          input.focus();
+        }
+      });
+    }
+    initTopbarSearch();
+    document.addEventListener('astro:after-swap', initTopbarSearch);
+  </script>
+</body>
+</html>

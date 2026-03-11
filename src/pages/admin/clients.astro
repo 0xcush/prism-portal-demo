@@ -1,0 +1,47 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { loadAdminData } from '../../lib/data-loader';
+import { formatCurrency } from '../../data/admin';
+import ClientsTable from '../../components/admin/ClientsTable';
+const BASE = import.meta.env.BASE_URL;
+
+const { clientAccounts: accounts } = await loadAdminData();
+const activeAccounts = accounts.filter(a => a.status === 'Active');
+const pendingAccounts = accounts.filter(a => a.status === 'Pending');
+const totalAUM = activeAccounts.reduce((s, a) => s + a.totalValue, 0);
+const avgFundValue = activeAccounts.length > 0 ? totalAUM / activeAccounts.length : 0;
+---
+
+<AdminLayout title="Client Accounts - Prism Admin" activePage="clients">
+  <Breadcrumbs items={[{label:"Admin", href:`${BASE}admin`}, {label:"Client Accounts"}]} />
+  <div class="mb-6 animate-fade-up">
+    <h2 class="text-2xl font-bold text-slate-900">Client Accounts</h2>
+    <p class="text-sm text-slate-500 mt-1">Fund administration and account overview</p>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total AUM</p>
+      <p class="text-xl font-bold text-slate-900 mt-1">{formatCurrency(totalAUM)}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-1">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Active Accounts</p>
+      <p class="text-xl font-bold text-emerald-600 mt-1">{activeAccounts.length}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-2">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Pending</p>
+      <p class="text-xl font-bold text-amber-600 mt-1">{pendingAccounts.length}</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 animate-fade-up-3">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Avg Fund Value</p>
+      <p class="text-xl font-bold text-slate-900 mt-1">{formatCurrency(avgFundValue)}</p>
+    </div>
+  </div>
+
+  <!-- Accounts Table -->
+  <div class="animate-fade-up-4">
+    <ClientsTable client:load clientAccounts={JSON.parse(JSON.stringify(accounts))} />
+  </div>
+</AdminLayout>

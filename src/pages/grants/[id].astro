@@ -4,23 +4,25 @@ import { loadAllDonorClients } from '../../lib/donor-data-loader';
 import type { ClientData, Grant } from '../../data/clients';
 import GrantDetail from '../../components/GrantDetail';
 
-export async function getStaticPaths() {
-  const allClients = await loadAllDonorClients();
-  const paths: { params: { id: string }; props: { grant: Grant; client: ClientData } }[] = [];
+const { id } = Astro.params;
 
-  for (const client of allClients) {
-    for (const grant of client.grants) {
-      paths.push({
-        params: { id: grant.id },
-        props: { grant, client },
-      });
-    }
+// Find the grant and its parent client from all donor clients
+const allClients = await loadAllDonorClients();
+let grant: Grant | undefined;
+let client: ClientData | undefined;
+
+for (const c of allClients) {
+  const g = c.grants.find((g) => g.id === id);
+  if (g) {
+    grant = g;
+    client = c;
+    break;
   }
-
-  return paths;
 }
 
-const { grant, client } = Astro.props;
+if (!grant || !client) {
+  return Astro.redirect(import.meta.env.BASE_URL);
+}
 ---
 
 <DashboardLayout

@@ -6,6 +6,7 @@ import { formatCurrency, formatCurrencyFull } from '../../data/admin';
 import PipelineFunnelChart from '../../components/admin/PipelineFunnelChart';
 import GrantDistributionChart from '../../components/admin/GrantDistributionChart';
 import AdminActivityFeed from '../../components/admin/AdminActivityFeed';
+import DashboardFilteredMetrics from '../../components/admin/DashboardFilteredMetrics';
 const BASE = import.meta.env.BASE_URL;
 
 const { prospects, firms, contacts, clientAccounts, grants, bdActivities } = await loadAdminData();
@@ -20,7 +21,7 @@ for (const p of prospects) {
 // Compute dashboard stats inline (replaces getDashboardStats)
 const activeAccountsList = clientAccounts.filter(a => a.status === 'Active');
 const stats = {
-  totalPipelineValue: prospects.reduce((sum, p) => sum + p.giftSize, 0),
+  totalPipelineValue: prospects.reduce((sum, p) => sum + p.dafSize, 0),
   activeAccounts: activeAccountsList.length,
   dafCount: activeAccountsList.filter(a => a.accountType === 'DAF').length,
   cfCount: activeAccountsList.filter(a => a.accountType === 'Collective Fund').length,
@@ -51,7 +52,7 @@ const pipelineFunnel = stageOrder.map(stage => {
   return {
     stage,
     count: items.length,
-    value: items.reduce((s, p) => s + p.giftSize, 0),
+    value: items.reduce((s, p) => s + p.dafSize, 0),
   };
 });
 
@@ -197,7 +198,7 @@ const ddIncomplete = grants.filter(g => g.ddStatus !== 'Complete' && g.ddStatus 
           </div>
           <div class="text-right">
             <span class="text-sm font-bold text-slate-900">{highProb.length} prospects</span>
-            <span class="text-xs text-slate-500 ml-2">{formatCurrency(highProb.reduce((s, p) => s + p.giftSize, 0))}</span>
+            <span class="text-xs text-slate-500 ml-2">{formatCurrency(highProb.reduce((s, p) => s + p.dafSize, 0))}</span>
           </div>
         </div>
         <div class="flex items-center justify-between p-3 rounded-lg bg-amber-50 border border-amber-100">
@@ -207,7 +208,7 @@ const ddIncomplete = grants.filter(g => g.ddStatus !== 'Complete' && g.ddStatus 
           </div>
           <div class="text-right">
             <span class="text-sm font-bold text-slate-900">{medProb.length} prospects</span>
-            <span class="text-xs text-slate-500 ml-2">{formatCurrency(medProb.reduce((s, p) => s + p.giftSize, 0))}</span>
+            <span class="text-xs text-slate-500 ml-2">{formatCurrency(medProb.reduce((s, p) => s + p.dafSize, 0))}</span>
           </div>
         </div>
         <div class="flex items-center justify-between p-3 rounded-lg bg-red-50 border border-red-100">
@@ -217,7 +218,7 @@ const ddIncomplete = grants.filter(g => g.ddStatus !== 'Complete' && g.ddStatus 
           </div>
           <div class="text-right">
             <span class="text-sm font-bold text-slate-900">{lowProb.length} prospects</span>
-            <span class="text-xs text-slate-500 ml-2">{formatCurrency(lowProb.reduce((s, p) => s + p.giftSize, 0))}</span>
+            <span class="text-xs text-slate-500 ml-2">{formatCurrency(lowProb.reduce((s, p) => s + p.dafSize, 0))}</span>
           </div>
         </div>
       </div>

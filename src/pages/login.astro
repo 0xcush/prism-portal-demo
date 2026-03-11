@@ -1,5 +1,67 @@
 ---
+export const prerender = false;
+
 import { ViewTransitions } from 'astro:transitions';
+
+// Handle magic link callback: /login?token=xxx
+const tokenParam = Astro.url.searchParams.get('token');
+if (tokenParam) {
+  Astro.cookies.set('prism_token', tokenParam, {
+    path: '/',
+    httpOnly: true,
+    secure: import.meta.env.PROD,
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+  });
+
+  // Decode portal from token to redirect to right section
+  let redirectTo = '/admin';
+  try {
+    const payload = JSON.parse(atob(tokenParam.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    if (payload.portal === 'donor') redirectTo = '/dashboard';
+    else if (payload.portal === 'grantee') redirectTo = '/grantee';
+  } catch { /* default to admin */ }
+
+  return Astro.redirect(redirectTo);
+}
+
+// Handle POST for magic link request (SSR form submission)
+let loginMessage = '';
+let loginError = '';
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData();
+    const email = formData.get('email')?.toString() || '';
+    const portal = formData.get('portal')?.toString() || 'donor';
+    const backendUrl = import.meta.env.API_URL || import.meta.env.BACKEND_URL;
+
+    if (backendUrl && email) {
+      // Admin portal uses Entra SSO — redirect to backend's Entra login
+      if (portal === 'admin') {
+        const callbackUrl = new URL('/auth/callback', Astro.url).toString();
+        const entraUrl = `${backendUrl.replace(/\/$/, '')}/api/v1/auth/entra/login?redirect_to=${encodeURIComponent(callbackUrl)}`;
+        return Astro.redirect(entraUrl);
+      }
+
+      // Donor/Grantee portals use magic link
+      const res = await fetch(`${backendUrl.replace(/\/$/, '')}/api/v1/auth/magic-link`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, portal }),
+      });
+      if (res.ok) {
+        loginMessage = 'Check your email for a secure login link.';
+      } else {
+        loginError = 'Unable to send login link. Please try again.';
+      }
+    } else if (!backendUrl) {
+      // Demo mode without backend — just redirect
+      loginMessage = 'Demo mode: select a portal and click Sign In.';
+    }
+  } catch {
+    loginError = 'Unable to reach the server. Please try again later.';
+  }
+}
 ---
 
 <!doctype html>
@@ -16,6 +78,7 @@ import { ViewTransitions } from 'astro:transitions';
       rel="stylesheet"
     />
     <title>Prism The Gift Fund - Sign In</title>
+    {(import.meta.env.API_URL || import.meta.env.BACKEND_URL) && <meta name="backend-configured" content="true" />}
     <ViewTransitions />
     <style>
       html {
@@ -80,7 +143,19 @@ import { ViewTransitions } from 'astro:transitions';
             </div>
           </div>
 
-          <form id="login-form" class="space-y-5">
+          {loginMessage && (
+            <div class="mb-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+              <p class="text-sm text-emerald-800">{loginMessage}</p>
+            </div>
+          )}
+          {loginError && (
+            <div class="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
+              <p class="text-sm text-red-800">{loginError}</p>
+            </div>
+          )}
+
+          <form id="login-form" method="POST" class="space-y-5">
+            <input type="hidden" name="portal" id="portal-input" value="donor" />
             <div>
               <label for="email" class="block text-sm font-medium text-slate-700 mb-1.5">
                 Email Address
@@ -176,6 +251,8 @@ import { ViewTransitions } from 'astro:transitions';
 
       function selectPortal(portal: string) {
         selectedPortal = portal;
+        const portalInput = document.getElementById('portal-input') as HTMLInputElement | null;
+        if (portalInput) portalInput.value = portal;
         document.querySelectorAll<HTMLButtonElement>('.portal-btn').forEach((btn) => {
           const isSelected = btn.dataset.portal === portal;
           selectedClasses.forEach((c) => btn.classList.toggle(c, isSelected));
@@ -189,10 +266,15 @@ import { ViewTransitions } from 'astro:transitions';
         });
       });
 
-      document.getElementById('login-form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        window.location.href = routes[selectedPortal];
-      });
+      // In demo mode (no BACKEND_URL), intercept form submission for client-side redirect.
+      // When BACKEND_URL is set, the form POSTs to the server for magic link flow.
+      const hasBackend = document.querySelector('meta[name="backend-configured"]');
+      if (!hasBackend) {
+        document.getElementById('login-form')?.addEventListener('submit', (e) => {
+          e.preventDefault();
+          window.location.href = routes[selectedPortal];
+        });
+      }
     </script>
 
     <!-- Footer -->

@@ -42,7 +42,12 @@ function extractClientHint(grantName: string): string {
  * in the grant name against the account name.
  */
 function grantMatchesAccount(grant: AdminGrant, account: ClientAccount): boolean {
-  if (grant.clientAccount) return grant.clientAccount === account.name;
+  if (grant.clientAccount) {
+    // Handle comma-separated relation values from Notion
+    const accountNames = grant.clientAccount.split(',').map(s => s.trim().toLowerCase());
+    return accountNames.includes(account.name.toLowerCase());
+  }
+  // Fallback: match grant name against account name
   const hint = extractClientHint(grant.grantName);
   if (!hint) return false;
   const acctLower = account.name.toLowerCase();
@@ -199,8 +204,10 @@ export async function loadAllDonorClients(): Promise<ClientData[]> {
           const nameLower = account.name.toLowerCase();
           const accountGrants = data.grants
             .filter((g) => {
-              // Match by relation if populated, otherwise by grant name containing client name
-              if (g.clientAccount) return g.clientAccount === account.name;
+              if (g.clientAccount) {
+                const names = g.clientAccount.split(',').map(s => s.trim().toLowerCase());
+                return names.includes(nameLower) || names.some(n => n.includes(nameLower.replace(/\s+(fund|trust|foundation)$/i, '')));
+              }
               return g.grantName.toLowerCase().includes(nameLower) ||
                      g.grantName.toLowerCase().includes(nameLower.replace(/\s+(fund|trust|foundation)$/i, ''));
             })

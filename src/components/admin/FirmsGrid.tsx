@@ -16,36 +16,60 @@ interface FilterDef {
   options: { value: string; label: string }[];
 }
 
-const filters: FilterDef[] = [
-  {
-    key: 'type',
-    label: 'Type',
-    options: [
-      { value: 'Investment Manager', label: 'Investment Manager' },
-      { value: 'Wealth Advisor', label: 'Wealth Advisor' },
-      { value: 'Accountancy', label: 'Accountancy' },
-      { value: 'Law Firm', label: 'Law Firm' },
-      { value: 'Family Office', label: 'Family Office' },
-      { value: 'Philanthropy Advisor', label: 'Philanthropy Advisor' },
-    ],
-  },
-  {
-    key: 'status',
-    label: 'Status',
-    options: [
-      { value: 'Active', label: 'Active' },
-      { value: 'Nurturing', label: 'Nurturing' },
-      { value: 'Inactive', label: 'Inactive' },
-    ],
-  },
-];
+type SortKey = 'default' | 'referrals' | 'name' | 'recent';
 
 export default function FirmsGrid({ firms }: FirmsGridProps) {
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
   const [openFilter, setOpenFilter] = useState<string | null>(null);
   const [selected, setSelected] = useState<Firm | null>(null);
+  const [sortKey, setSortKey] = useState<SortKey>('default');
   const filterRef = useRef<HTMLDivElement>(null);
+
+  const locationOptions = useMemo(() => {
+    const allLocations = new Set<string>();
+    firms.forEach((f) => f.offices.forEach((o) => allLocations.add(o)));
+    return Array.from(allLocations).sort().map((loc) => ({ value: loc, label: loc }));
+  }, [firms]);
+
+  const filters: FilterDef[] = useMemo(() => [
+    {
+      key: 'type',
+      label: 'Type',
+      options: [
+        { value: 'Investment Manager', label: 'Investment Manager' },
+        { value: 'Wealth Advisor', label: 'Wealth Advisor' },
+        { value: 'Accountancy', label: 'Accountancy' },
+        { value: 'Law Firm', label: 'Law Firm' },
+        { value: 'Family Office', label: 'Family Office' },
+        { value: 'Philanthropy Advisor', label: 'Philanthropy Advisor' },
+      ],
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      options: [
+        { value: 'Active', label: 'Active' },
+        { value: 'Nurturing', label: 'Nurturing' },
+        { value: 'Inactive', label: 'Inactive' },
+      ],
+    },
+    {
+      key: 'relationshipStatus',
+      label: 'Relationship',
+      options: [
+        { value: 'Active', label: 'Active' },
+        { value: 'Nurturing', label: 'Nurturing' },
+        { value: 'Secured', label: 'Secured' },
+        { value: 'Cold', label: 'Cold' },
+      ],
+    },
+    {
+      key: 'location',
+      label: 'Location',
+      options: locationOptions,
+    },
+  ], [locationOptions]);
 
   useEffect(() => {
     if (!openFilter) return;
@@ -70,18 +94,35 @@ export default function FirmsGrid({ firms }: FirmsGridProps) {
 
     for (const [key, value] of Object.entries(activeFilters)) {
       if (value && value !== 'all') {
-        rows = rows.filter((f) => (f as any)[key] === value);
+        if (key === 'location') {
+          rows = rows.filter((f) => f.offices.includes(value));
+        } else {
+          rows = rows.filter((f) => (f as any)[key] === value);
+        }
       }
     }
 
+    switch (sortKey) {
+      case 'referrals':
+        rows.sort((a, b) => b.referralCount - a.referralCount);
+        break;
+      case 'name':
+        rows.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'recent':
+        rows.sort((a, b) => new Date(b.lastInteraction).getTime() - new Date(a.lastInteraction).getTime());
+        break;
+    }
+
     return rows;
-  }, [firms, search, activeFilters]);
+  }, [firms, search, activeFilters, sortKey]);
 
   const activeFilterCount = Object.values(activeFilters).filter((v) => v && v !== 'all').length;
 
   const clearAll = () => {
     setSearch('');
     setActiveFilters({});
+    setSortKey('default');
   };
 
   return (
@@ -171,7 +212,23 @@ export default function FirmsGrid({ firms }: FirmsGridProps) {
                 </div>
               ))}
 
-              {(search || activeFilterCount > 0) && (
+              {/* Sort */}
+              <select
+                value={sortKey}
+                onChange={(e) => setSortKey(e.target.value as SortKey)}
+                className={`px-3 py-2 rounded-lg border text-sm transition-colors focus-visible:ring-2 focus-visible:ring-navy-600 focus-visible:ring-offset-2 ${
+                  sortKey !== 'default'
+                    ? 'border-navy-200 bg-navy-50 text-navy-700'
+                    : 'border-slate-200 text-slate-600'
+                }`}
+              >
+                <option value="default">Sort: Default</option>
+                <option value="referrals">Most Referrals</option>
+                <option value="name">Name A-Z</option>
+                <option value="recent">Most Recent</option>
+              </select>
+
+              {(search || activeFilterCount > 0 || sortKey !== 'default') && (
                 <button
                   onClick={clearAll}
                   className="text-xs text-slate-400 hover:text-slate-600 px-2 py-1 transition-colors"
@@ -219,7 +276,10 @@ export default function FirmsGrid({ firms }: FirmsGridProps) {
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="text-base font-semibold text-slate-900">{f.name}</h3>
-                    <StatusBadge status={f.type} className="mt-1" />
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <StatusBadge status={f.type} />
+                      <StatusBadge status={f.relationshipStatus} />
+                    </div>
                   </div>
                   <StatusBadge status={f.status} />
                 </div>
@@ -237,6 +297,13 @@ export default function FirmsGrid({ firms }: FirmsGridProps) {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Last: {formatDate(f.lastInteraction)}
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
+                    </svg>
+                    <span className="font-medium text-slate-700">{f.keyContactName}</span>
+                    <span className="text-slate-400">{f.keyContactTitle}</span>
                   </div>
                 </div>
 

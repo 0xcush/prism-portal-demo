@@ -137,6 +137,21 @@ const base = import.meta.env.BASE_URL;
         </svg>
         KPIs
       </a>
+
+      <a
+        href={`${base}admin/approvals`}
+        class:list={[
+          'flex items-center gap-3 py-2.5 pr-3 rounded-r-lg text-sm font-medium transition-all duration-150',
+          activePage === 'approvals'
+            ? 'bg-navy-500/80 text-white border-l-[3px] border-gold-400 pl-[calc(0.75rem-3px)]'
+            : 'text-navy-200 hover:bg-navy-500/40 hover:text-white pl-3',
+        ]}
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Approvals
+      </a>
     </div>
   </nav>
 

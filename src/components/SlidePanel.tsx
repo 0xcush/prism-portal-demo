@@ -40,13 +40,13 @@ export default function SlidePanel({ open, onClose, title, subtitle, children, w
 
       {/* Panel */}
       <div
-        className={`relative ${width} w-full bg-white shadow-2xl border-l border-slate-200 overflow-y-auto animate-slide-in`}
+        className={`relative ${width} w-full h-full bg-white shadow-2xl border-l border-slate-200 flex flex-col animate-slide-in`}
         role="dialog"
         aria-modal="true"
         aria-label={title || 'Detail panel'}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-white border-b border-slate-100 px-6 py-4 flex items-start justify-between">
+        <div className="flex-shrink-0 bg-white border-b border-slate-100 px-6 py-4 flex items-start justify-between">
           <div className="min-w-0">
             {title && <h2 className="text-lg font-semibold text-slate-800 truncate">{title}</h2>}
             {subtitle && <p className="text-sm text-slate-400 mt-0.5 truncate">{subtitle}</p>}
@@ -63,7 +63,7 @@ export default function SlidePanel({ open, onClose, title, subtitle, children, w
         </div>
 
         {/* Body */}
-        <div className="px-6 py-6">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-6">{children}</div>
       </div>
     </div>
   );

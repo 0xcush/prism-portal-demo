@@ -28,11 +28,11 @@ for (const p of prospects) {
     const type = firm?.type || 'Direct';
     if (!firmTypeStats[type]) firmTypeStats[type] = { prospects: 0, value: 0 };
     firmTypeStats[type].prospects += 1;
-    firmTypeStats[type].value += p.giftSize;
+    firmTypeStats[type].value += p.dafSize;
   } else {
     if (!firmTypeStats['Direct / Marketing']) firmTypeStats['Direct / Marketing'] = { prospects: 0, value: 0 };
     firmTypeStats['Direct / Marketing'].prospects += 1;
-    firmTypeStats['Direct / Marketing'].value += p.giftSize;
+    firmTypeStats['Direct / Marketing'].value += p.dafSize;
   }
 }
 

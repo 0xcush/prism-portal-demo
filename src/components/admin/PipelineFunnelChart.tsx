@@ -13,7 +13,7 @@ import ErrorBoundary from '../ErrorBoundary';
 
 interface Prospect {
   stage: string;
-  giftSize: number;
+  dafSize: number;
 }
 
 interface PipelineFunnelChartProps {
@@ -72,14 +72,14 @@ export default function PipelineFunnelChart({ prospects }: PipelineFunnelChartPr
     for (const p of prospects) {
       if (!byStage[p.stage]) byStage[p.stage] = { count: 0, value: 0 };
       byStage[p.stage].count += 1;
-      byStage[p.stage].value += p.giftSize;
+      byStage[p.stage].value += p.dafSize;
     }
     const data = STAGE_ORDER.map(stage => ({
       stage,
       count: byStage[stage]?.count || 0,
       value: byStage[stage]?.value || 0,
     }));
-    const total = prospects.reduce((sum, p) => sum + p.giftSize, 0);
+    const total = prospects.reduce((sum, p) => sum + p.dafSize, 0);
     return { chartData: data, totalValue: total };
   }, [prospects]);
 

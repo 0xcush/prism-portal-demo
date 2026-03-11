@@ -21,10 +21,10 @@ const stageChartData = stageOrder.map(stage => {
   return {
     stage,
     count: items.length,
-    value: items.reduce((s, p) => s + p.giftSize, 0),
+    value: items.reduce((s, p) => s + p.dafSize, 0),
   };
 });
-const totalValue = prospects.reduce((s, p) => s + p.giftSize, 0);
+const totalValue = prospects.reduce((s, p) => s + p.dafSize, 0);
 const overdueCount = prospects.filter(p => p.followUpStatus === 'Overdue').length;
 ---
 

@@ -1,11 +1,17 @@
 /**
- * Unified data loader — tries Notion at build time, falls back to mock data.
+ * Unified data loader — tries FastAPI backend, then Notion, then mock data.
+ *
+ * In SSR mode with API_URL set, fetches from the backend API.
+ * The auth token is read from AsyncLocalStorage (set by middleware).
+ * Falls back to Notion at build time, then to mock data.
  *
  * Usage in .astro frontmatter:
  *   const { prospects, firms, grants } = await loadAdminData();
  *   const { prospects } = await loadFilteredAdminData({ prospects: [filter] });
  */
 
+import { isApiEnabled, fetchAllAdminData } from './api-client';
+import { getRequestToken } from './request-context';
 import {
   fetchAllFromNotion,
   isNotionEnabled,
@@ -144,12 +150,32 @@ export interface GranteeData {
   payments: GrantPayment[];
 }
 
-// ── Cached unfiltered loader (unchanged API) ────────────────────────────
+// ── Cached loader ───────────────────────────────────────────────────────
+// In SSR mode, caching is per-process (not per-request). This is fine for
+// Notion/mock data. For API data, we skip the cache and fetch fresh each
+// request since the backend handles its own caching + RLS scoping.
 
 let _cache: NotionData | null | undefined;
 
 export async function loadAdminData(): Promise<NotionData> {
-  // Return cached if already fetched this build
+  // 1. Try FastAPI backend (SSR mode)
+  if (isApiEnabled()) {
+    const token = getRequestToken();
+    if (token) {
+      const apiData = await fetchAllAdminData(token);
+      if (apiData) {
+        // Backfill BD activities from mock if endpoint doesn't exist yet
+        if (apiData.bdActivities.length === 0) {
+          apiData.bdActivities = getBDActivities();
+        }
+        console.log(`[data-loader] API: ${apiData.prospects.length} prospects, ${apiData.firms.length} firms`);
+        return apiData;
+      }
+      console.warn('[data-loader] API fetch failed — trying fallbacks');
+    }
+  }
+
+  // 2. Try Notion (build-time or when API unavailable)
   if (_cache !== undefined) {
     return _cache ?? mockData();
   }
@@ -164,6 +190,7 @@ export async function loadAdminData(): Promise<NotionData> {
     console.warn('[data-loader] Notion fetch failed — falling back to mock data');
   }
 
+  // 3. Mock data
   _cache = null;
   return mockData();
 }
@@ -172,6 +199,7 @@ export async function loadAdminData(): Promise<NotionData> {
 
 /**
  * Load admin data with optional Notion-level filters.
+ * When using the API, fetches all data and applies filters client-side.
  * When Notion is connected, filters are passed to the API.
  * When using mock data, filters are applied client-side.
  */
@@ -185,6 +213,13 @@ export async function loadFilteredAdminData(
   // If no filters/sorts, use the cached path
   if (!hasFilters && !hasSorts) {
     return loadAdminData();
+  }
+
+  // In API mode, fetch all then filter client-side
+  // (backend filtering can be added later as optimization)
+  if (isApiEnabled() && getRequestToken()) {
+    const base = await loadAdminData();
+    return applyFiltersAndSorts(base, filters, sorts);
   }
 
   if (isNotionEnabled()) {
@@ -222,23 +257,7 @@ export async function loadFilteredAdminData(
 
   // Mock data path: load all, then apply filters client-side
   const base = await loadAdminData();
-  let result = { ...base };
-
-  if (filters?.prospects) result.prospects = applyFiltersToMockData(base.prospects, filters.prospects);
-  if (filters?.firms) result.firms = applyFiltersToMockData(base.firms, filters.firms);
-  if (filters?.contacts) result.contacts = applyFiltersToMockData(base.contacts, filters.contacts);
-  if (filters?.clientAccounts) result.clientAccounts = applyFiltersToMockData(base.clientAccounts, filters.clientAccounts);
-  if (filters?.grants) result.grants = applyFiltersToMockData(base.grants, filters.grants);
-  if (filters?.bdActivities) result.bdActivities = applyFiltersToMockData(base.bdActivities, filters.bdActivities);
-
-  if (sorts?.prospects) result.prospects = applySortsToMockData(result.prospects, sorts.prospects);
-  if (sorts?.firms) result.firms = applySortsToMockData(result.firms, sorts.firms);
-  if (sorts?.contacts) result.contacts = applySortsToMockData(result.contacts, sorts.contacts);
-  if (sorts?.clientAccounts) result.clientAccounts = applySortsToMockData(result.clientAccounts, sorts.clientAccounts);
-  if (sorts?.grants) result.grants = applySortsToMockData(result.grants, sorts.grants);
-  if (sorts?.bdActivities) result.bdActivities = applySortsToMockData(result.bdActivities, sorts.bdActivities);
-
-  return result;
+  return applyFiltersAndSorts(base, filters, sorts);
 }
 
 // ── Filtered grantee loader ─────────────────────────────────────────────
@@ -275,6 +294,30 @@ export async function loadFilteredGranteeData(
 }
 
 // ── Private helpers ─────────────────────────────────────────────────────
+
+function applyFiltersAndSorts(
+  base: NotionData,
+  filters?: AdminDataFilters,
+  sorts?: AdminDataSorts,
+): NotionData {
+  let result = { ...base };
+
+  if (filters?.prospects) result.prospects = applyFiltersToMockData(base.prospects, filters.prospects);
+  if (filters?.firms) result.firms = applyFiltersToMockData(base.firms, filters.firms);
+  if (filters?.contacts) result.contacts = applyFiltersToMockData(base.contacts, filters.contacts);
+  if (filters?.clientAccounts) result.clientAccounts = applyFiltersToMockData(base.clientAccounts, filters.clientAccounts);
+  if (filters?.grants) result.grants = applyFiltersToMockData(base.grants, filters.grants);
+  if (filters?.bdActivities) result.bdActivities = applyFiltersToMockData(base.bdActivities, filters.bdActivities);
+
+  if (sorts?.prospects) result.prospects = applySortsToMockData(result.prospects, sorts.prospects);
+  if (sorts?.firms) result.firms = applySortsToMockData(result.firms, sorts.firms);
+  if (sorts?.contacts) result.contacts = applySortsToMockData(result.contacts, sorts.contacts);
+  if (sorts?.clientAccounts) result.clientAccounts = applySortsToMockData(result.clientAccounts, sorts.clientAccounts);
+  if (sorts?.grants) result.grants = applySortsToMockData(result.grants, sorts.grants);
+  if (sorts?.bdActivities) result.bdActivities = applySortsToMockData(result.bdActivities, sorts.bdActivities);
+
+  return result;
+}
 
 function mockData(): NotionData {
   return {

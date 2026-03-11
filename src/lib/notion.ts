@@ -272,7 +272,7 @@ function mapProspect(
     id: page.id,
     name: title(p, 'Prospect Name'),
     stage: select(p, 'Stage') as Prospect['stage'],
-    giftSize: num(p, 'Gift Size (Est.)'),
+    dafSize: num(p, 'Gift Size (Est.)'),
     fundType: select(p, 'Fund Type') as Prospect['fundType'],
     ukUs: select(p, 'UK/US') as Prospect['ukUs'],
     conversionProbability: select(p, 'Conversion Probability') as Prospect['conversionProbability'],
@@ -281,11 +281,14 @@ function mapProspect(
     referredBy: referredByIds.map(id => contactLookup.get(id) ?? '').filter(Boolean).join(', ') || '',
     referringFirm: referringFirmIds.map(id => firmLookup.get(id) ?? '').filter(Boolean).join(', ') || '',
     relationshipManager: text(p, 'Relationship Manager'),
+    bdPointOfContact: text(p, 'BD Point of Contact') || 'Unassigned',
     dateEnteredPipeline: date(p, 'Date Entered Pipeline'),
     lastContact: date(p, 'Last Contact'),
     nextFollowUp: date(p, 'Next Follow-Up'),
     notes: text(p, 'Notes'),
     daysInPipeline: formula(p, 'Days in Pipeline'),
+    impactCategory: select(p, 'Impact Category') || '',
+    location: text(p, 'Location') || '',
   };
 }
 
@@ -343,6 +346,8 @@ function mapClientAccount(page: any): ClientAccount {
     ytdReturn: num(p, 'YTD Return'),
     relationshipManager: text(p, 'Relationship Manager'),
     onboardedDate: date(p, 'Onboarded Date'),
+    impactCategory: select(p, 'Impact Category') || '',
+    location: text(p, 'Location') || '',
   };
 }
 

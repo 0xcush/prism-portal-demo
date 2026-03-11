@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   LineChart,
   Line,
@@ -10,15 +11,25 @@ import {
 } from 'recharts';
 import ErrorBoundary from '../ErrorBoundary';
 
+interface LocationBreakdown {
+  location: string;
+  meetings: number;
+  lunchAndLearns: number;
+  events: number;
+  referrals: number;
+}
+
 interface QuarterlyKPIs {
   quarter: string;
   meetings: number;
   newProspects: number;
   conversions: number;
+  locationBreakdown?: LocationBreakdown[];
 }
 
 interface KPITrendChartProps {
   kpis: QuarterlyKPIs[];
+  locationFilter?: string;
 }
 
 interface TooltipProps {
@@ -52,15 +63,26 @@ function CustomTooltip({ active, payload, label }: TooltipProps) {
   );
 }
 
-export default function KPITrendChart({ kpis }: KPITrendChartProps) {
+export default function KPITrendChart({ kpis, locationFilter }: KPITrendChartProps) {
+  const chartData = useMemo(() => {
+    if (!locationFilter || locationFilter === 'All Locations') return kpis;
+    return kpis.map((k) => {
+      const loc = k.locationBreakdown?.find((l) => l.location === locationFilter);
+      if (!loc) return { ...k, meetings: 0, newProspects: 0, conversions: 0 };
+      return { ...k, meetings: loc.meetings, newProspects: 0, conversions: 0 };
+    });
+  }, [kpis, locationFilter]);
+
   return (
     <ErrorBoundary>
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-6">KPI Trends</h2>
+        <h2 className="text-lg font-semibold text-slate-800 mb-6">
+          KPI Trends{locationFilter && locationFilter !== 'All Locations' ? ` — ${locationFilter}` : ''}
+        </h2>
 
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={kpis} margin={{ top: 5, right: 16, bottom: 5, left: 0 }}>
+            <LineChart data={chartData} margin={{ top: 5, right: 16, bottom: 5, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis
                 dataKey="quarter"

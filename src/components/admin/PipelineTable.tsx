@@ -28,11 +28,11 @@ const columns: ColumnDef<Prospect>[] = [
     render: (row) => <StatusBadge status={row.stage} />,
   },
   {
-    key: 'giftSize',
-    header: 'Gift Size',
+    key: 'dafSize',
+    header: 'DAF Size',
     align: 'right',
-    render: (row) => <span className="font-medium text-slate-700">{formatCurrencyFull(row.giftSize)}</span>,
-    sortValue: (row) => row.giftSize,
+    render: (row) => <span className="font-medium text-slate-700">{formatCurrencyFull(row.dafSize)}</span>,
+    sortValue: (row) => row.dafSize,
   },
   {
     key: 'fundType',
@@ -78,6 +78,11 @@ const columns: ColumnDef<Prospect>[] = [
     key: 'relationshipManager',
     header: 'RM',
     render: (row) => <span className="text-xs text-slate-500">{row.relationshipManager.split(' ')[0]}</span>,
+  },
+  {
+    key: 'bdPointOfContact',
+    header: 'BD Contact',
+    render: (row) => <span className="text-xs text-slate-500">{row.bdPointOfContact}</span>,
   },
 ];
 

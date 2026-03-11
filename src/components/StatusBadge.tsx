@@ -44,6 +44,10 @@ const statusColorMap: Record<string, string> = {
   Nurturing: 'bg-blue-50 text-blue-600 ring-blue-500/10',
   Inactive: 'bg-slate-50 text-slate-500 ring-slate-400/10',
 
+  // Relationship statuses
+  Secured: 'bg-blue-50 text-blue-700 ring-blue-600/10',
+  Cold: 'bg-slate-100 text-slate-500 ring-slate-400/10',
+
   // Activity statuses
   Planned: 'bg-blue-50 text-blue-600 ring-blue-500/10',
   Completed: 'bg-emerald-50 text-emerald-700 ring-emerald-600/10',
